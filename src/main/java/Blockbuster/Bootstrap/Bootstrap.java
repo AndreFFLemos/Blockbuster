@@ -1,19 +1,25 @@
 package Blockbuster.Bootstrap;
 
+import Blockbuster.Model.Customer;
+import Blockbuster.Model.Movie;
+import Blockbuster.Model.Rental;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+
+@Component
 public class Bootstrap implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        Customer customer = new Customer(1,"Ana","Trees Street", 12345678,"ana@mail.com");
-        Movie movie = new Movie(1,"Zombie",5,5);
-        Movie movie1 =new Movie(2,"ET", 5,7);
+        Customer customer = new Customer();
+        Movie movie = new Movie();
+        Movie movie1 =new Movie();
 
         Map<Integer,Customer> customers=new HashMap<>();
         customers.put(1,customer);
@@ -29,7 +35,6 @@ public class Bootstrap implements CommandLineRunner {
         Map<Integer,Movie> storeRentals=new HashMap<>();
         storeRentals.put(1,movie1);
 
-        Store store= new Store(1,customers,moviesInStore,storeRentals);
 
     }
 }

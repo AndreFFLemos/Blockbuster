@@ -3,35 +3,26 @@ package Blockbuster.Controller;
 import Blockbuster.Model.Customer;
 import Blockbuster.Model.Rental;
 import Blockbuster.Service.RentalServiceInterface;
+import org.springframework.stereotype.Controller;
 
+@Controller
 public class RentalController implements RentalControllerInterface {
 
     private Customer customer;
     private RentalServiceInterface rsi;
 
-
     @Override
-    public double createRental(Customer customer, Rental rental) {
-        return 0;
-    }
-
-    @Override
-    public String deleteRental(Customer customer, Rental actualRental) {
+    public Rental createRental(Rental rental) {
         return null;
     }
 
     @Override
-    public String updateRental(Customer customer, Rental actualRental) {
+    public String deleteRental(Rental actualRental) {
         return null;
     }
 
     @Override
-    public Rental findRental(Customer customer, Rental actualRental) {
+    public Rental findRental(Rental actualRental) {
         return null;
-    }
-
-    @Override
-    public double rentalDelivery(Customer customer, Rental actualRental) {
-        return 0;
     }
 }

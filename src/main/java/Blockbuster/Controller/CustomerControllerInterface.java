@@ -4,9 +4,9 @@ import Blockbuster.Model.Customer;
 
 public interface CustomerControllerInterface {
 
-    String findCustomer(Customer customer);
-    String updateCustomer(Customer customer);
-    String createCustomer(Customer customer);
-    String deleteCustomer(Customer customer);
+    Customer findCustomer(Customer customer);
+    Customer updateCustomer(Customer customer);
+    Customer createCustomer(Customer customer);
+    void deleteCustomer(Customer customer);
 
 }

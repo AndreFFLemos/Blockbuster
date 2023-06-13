@@ -2,10 +2,11 @@ package Blockbuster.Model;
 
 import Blockbuster.Model.Customer;
 import Blockbuster.Model.Movie;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 
 import java.time.LocalDate;
 
@@ -15,9 +16,16 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Entity
 public class Rental {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @JoinColumn(name="movie")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Movie movie;
-    private LocalDate start;
+    @Column(name="rentaldate")
+    private LocalDate rentalDate;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="customer")
     private Customer customer;
 
 }

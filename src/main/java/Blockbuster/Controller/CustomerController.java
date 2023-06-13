@@ -2,24 +2,34 @@ package Blockbuster.Controller;
 
 import Blockbuster.Model.Customer;
 import Blockbuster.Service.CustomerServiceInterface;
+import org.springframework.stereotype.Controller;
 
-public class CustomerController implements CustomerControllerInterface{
+@Controller
+public class CustomerController implements CustomerControllerInterface {
 
-    private CustomerServiceInterface customerServiceInterface;
+    private CustomerServiceInterface csi;
+
+    @Override
+    public Customer findCustomer(Customer customer) {
+        return csi.createCustomer(customer);
+    }
+
+    @Override
+    public Customer updateCustomer(Customer customer) {
+        return null;
+    }
+
+    @Override
+    public Customer createCustomer(Customer customer) {
+        return null;
+    }
+
+    @Override
+    public void deleteCustomer(Customer customer) {
+
+    }
 
     //a method that receives a HTTP request from the user and tells the Service Layer to check
-    public String findCustomer(Customer customer) {
-        return customerServiceInterface.findCustomerById(customer).toString();
-    }
 
-public String updateCustomer(Customer customer){
-        return customerServiceInterface.updateCustomer(customer);
-    }
 
-    public String createCustomer(Customer customer) {
-     return customerServiceInterface.createCustomer(customer);
-    }
-    public String deleteCustomer(Customer customer) {
-        return customerServiceInterface.deleteCustomerById(customer.getId());
-    }
 }
