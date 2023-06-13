@@ -2,10 +2,15 @@ package Blockbuster.Service;
 
 import Blockbuster.Model.Rental;
 import Blockbuster.Repository.RentalRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.NoSuchElementException;
 
+@Service
+@Transactional
 public class RentalService implements RentalServiceInterface {
-    
+
     private RentalRepository rr;
 
     @Override

@@ -9,7 +9,7 @@ public class CustomerController implements CustomerControllerInterface{
 
     //a method that receives a HTTP request from the user and tells the Service Layer to check
     public String findCustomer(Customer customer) {
-        return customerServiceInterface.findCustomer(customer).toString();
+        return customerServiceInterface.findCustomerById(customer).toString();
     }
 
 public String updateCustomer(Customer customer){
@@ -20,6 +20,6 @@ public String updateCustomer(Customer customer){
      return customerServiceInterface.createCustomer(customer);
     }
     public String deleteCustomer(Customer customer) {
-        return customerServiceInterface.deleteCustomer(customer);
+        return customerServiceInterface.deleteCustomerById(customer.getId());
     }
 }

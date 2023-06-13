@@ -3,10 +3,13 @@ package Blockbuster.Service;
 import Blockbuster.Model.Customer;
 import Blockbuster.Repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
+@Service
+@Transactional
 public class CustomerService implements CustomerServiceInterface {
 
     @Autowired
@@ -27,7 +30,7 @@ public class CustomerService implements CustomerServiceInterface {
         cr.deleteById(id);
     }
 
-    public Customer getCustomerById(int id) {
+    public Customer findCustomerById(int id) {
         return cr.findById(id).orElseThrow(()-> new NoSuchElementException("Customer not found."));
     }
 

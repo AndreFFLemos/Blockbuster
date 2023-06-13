@@ -1,4 +1,4 @@
-package Blockbuster.Repository;
+package Blockbuster.Service;
 
 public class RentalRepositoryTest {
 }

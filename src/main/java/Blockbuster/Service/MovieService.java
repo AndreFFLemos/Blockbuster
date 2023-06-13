@@ -3,10 +3,13 @@ package Blockbuster.Service;
 import Blockbuster.Controller.MovieControllerInterface;
 import Blockbuster.Model.Movie;
 import Blockbuster.Repository.MovieRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 
-
+@Service
+@Transactional
 public class MovieService implements MovieServiceInterface{
     private MovieControllerInterface mci;
     private MovieRepository mr;
