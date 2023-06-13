@@ -4,11 +4,9 @@ import Blockbuster.Model.Customer;
 
 public interface CustomerServiceInterface {
 
+    Customer createCustomer(Customer customer);
+    void deleteCustomerById(int id);
+    Customer getCustomerById(int id);
+    Customer updateCustomer(Customer customer);
 
-    Customer findCustomer(Customer customer);
-    String createCustomer(Customer customer);
-    String deleteCustomer(Customer customer);
-    String updateCustomer(Customer customer);
-    String doesCustomerHaveUnreturnedMovies(Customer customer);
-    String customerHasFines(Customer customer);
 }

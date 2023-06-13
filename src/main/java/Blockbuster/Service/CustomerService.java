@@ -1,54 +1,47 @@
 package Blockbuster.Service;
 
 import Blockbuster.Model.Customer;
-import Blockbuster.Repository.CustomerRepositoryInterface;
+import Blockbuster.Repository.CustomerRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 
-public class CustomerService implements CustomerServiceInterface{
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
-    CustomerRepositoryInterface cri;
+public class CustomerService implements CustomerServiceInterface {
 
-    @Override
-    public Customer findCustomer(Customer customer) {
-        return cri.findCustomer(customer);
+    @Autowired
+    CustomerRepository cr;
+    Customer customer;
+
+    public Customer createCustomer(Customer customer) {
+       if (cr.findById(customer.getId()).isPresent()){
+           throw new NoSuchElementException("Customer already exists");
+       }
+        return  cr.save(customer);
     }
 
-    @Override
-    public String createCustomer(Customer customer) {
-        if (cri.createCustomer(customer)==false) {
-            return "Customer already exists";
+    public void deleteCustomerById(int id) {
+        if (!cr.findById(customer.getId()).isPresent()){
+            throw new NoSuchElementException("Customer doesn't exist");
         }
-        return "Customer created!";
+        cr.deleteById(id);
     }
 
-    @Override
-    public String deleteCustomer(Customer customer) {
-        if (cri.deleteCustomer(customer) == true) {
-            return "Customer deleted";
-        }return "";
+    public Customer getCustomerById(int id) {
+        return cr.findById(id).orElseThrow(()-> new NoSuchElementException("Customer not found."));
     }
 
-    @Override
-    public String updateCustomer(Customer customer) {
-        if (cri.updateCustomer(customer)){
-            return "Customer updated";
-        }
-        return "";
-    }
+    public Customer updateCustomer(Customer customer) {
+        Customer existingCustomer= cr.findById(customer.getId()).orElseThrow(()->
+                new NoSuchElementException("The customer wasn't found"));
 
-    @Override
-    public String doesCustomerHaveUnreturnedMovies(Customer customer) {
-      /*  if (cri.getCustomerNumberOfDeliveredMovies(customer)){
-            return "Customer has movies to return";
-        }
-    */
-        return "Customer has 0 movies to return";
+        existingCustomer.setFName(customer.getFName());
+        existingCustomer.setLName(customer.getLName());
+        existingCustomer.setEmail(customer.getEmail());
+        existingCustomer.setPhone(customer.getPhone());
+        existingCustomer.setUsername(customer.getUsername());
+        existingCustomer.setPassword(customer.getPassword());
 
-    }
-    @Override
-    public String customerHasFines(Customer customer) {
-        /* if (cri.customerHasFines(customer)==true){
-            return "Customer has unpaid fines";
-        }*/
-        return "Customer doesn't have fines to pay";
+        return cr.save(existingCustomer);
     }
 }
