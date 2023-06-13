@@ -2,37 +2,40 @@ package Blockbuster.Service;
 
 import Blockbuster.Controller.MovieControllerInterface;
 import Blockbuster.Model.Movie;
-import Blockbuster.Repository.MovieRepositoryInterface;
+import Blockbuster.Repository.MovieRepository;
+
+import java.util.NoSuchElementException;
+
 
 public class MovieService implements MovieServiceInterface{
     private MovieControllerInterface mci;
-    private MovieRepositoryInterface mri;
+    private MovieRepository mr;
 
-    public String createMovie(Movie movie) {
-        if (mri.createMovie(movie)==true){
-            return "Movie added to the stock!";
+    public Movie createMovie(Movie movie) {
+        if (mr.findById(movie.getId()).isPresent()){
+            throw new IllegalArgumentException("Movie already present");
         }
-        return "Movie already exists in stock!";
+        return mr.save(movie);
     }
 
-    public String findMovie(Movie movie) {
-        if (mri.findMovie(movie).equals(movie)) {
-            return movie.toString();
-        }
-        return "We don't have that movie";
+    public Movie findMovieById(int id) {
+       return mr.findById(id).orElseThrow(()->new NoSuchElementException("Movie not found"));
     }
 
-    public String updateMovie(Movie movie) {
-        if(mri.updateMovie(movie)==true){
-            return "Movie updated!";
-        }
-        return "";
+    public Movie updateMovie(Movie movie) {
+            Movie existingMovie= mr.findById(movie.getId()).orElseThrow(()-> new NoSuchElementException("Movie not found"));
+
+            existingMovie.setTitle(movie.getTitle());
+            existingMovie.setGenre(movie.getGenre());
+            existingMovie.setRating(movie.getRating());
+            existingMovie.setReleaseYear(movie.getReleaseYear());
+            existingMovie.setMoviePrice(movie.getMoviePrice());
+
+            return mr.save(existingMovie);
     }
 
-    public String deleteMovie(Movie movie) {
-        if (mri.deleteMovie(movie.getId())){
-            return "Movie eliminated from the DB";
-        }
-        return "Movie doesn't exist";
+    public void deleteMovieById(int id) {
+        Movie existingMovie= mr.findById(id).orElseThrow(()-> new IllegalArgumentException("Movie not found"));
+        mr.deleteById(existingMovie.getId());
     }
 }

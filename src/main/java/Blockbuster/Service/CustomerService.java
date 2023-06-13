@@ -15,7 +15,7 @@ public class CustomerService implements CustomerServiceInterface {
 
     public Customer createCustomer(Customer customer) {
        if (cr.findById(customer.getId()).isPresent()){
-           throw new NoSuchElementException("Customer already exists");
+           throw new IllegalArgumentException("Customer already exists");
        }
         return  cr.save(customer);
     }

@@ -4,8 +4,8 @@ import Blockbuster.Model.Movie;
 
 public interface MovieServiceInterface {
 
-    String createMovie(Movie movie);
-    String findMovie(Movie movie);
-    String updateMovie(Movie movie);
-    String deleteMovie(Movie movie);
+    Movie createMovie(Movie movie);
+    Movie findMovieById(int id);
+    Movie updateMovie(Movie movie);
+    void deleteMovieById(int id);
 }
