@@ -17,7 +17,7 @@ public class CustomerView {
     }
 
     public void customerDeleted (Customer customer){
-        System.out.println(customerController.deleteCustomer(customer));
+
     }
     public void customerUpdated (Customer customer){
         System.out.println(customerController.updateCustomer(customer));

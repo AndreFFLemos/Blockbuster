@@ -32,7 +32,7 @@ public class MovieService implements MovieServiceInterface{
             existingMovie.setGenre(movie.getGenre());
             existingMovie.setRating(movie.getRating());
             existingMovie.setReleaseYear(movie.getReleaseYear());
-            existingMovie.setMoviePrice(movie.getMoviePrice());
+            existingMovie.setCost(movie.getCost());
 
             return mr.save(existingMovie);
     }
