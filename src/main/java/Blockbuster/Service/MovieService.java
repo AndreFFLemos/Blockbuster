@@ -3,9 +3,11 @@ package Blockbuster.Service;
 import Blockbuster.Controller.MovieControllerInterface;
 import Blockbuster.Model.Movie;
 import Blockbuster.Repository.MovieRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -13,6 +15,14 @@ import java.util.NoSuchElementException;
 public class MovieService implements MovieServiceInterface{
     private MovieControllerInterface mci;
     private MovieRepository mr;
+    private Movie movie;
+
+    @Autowired
+    public MovieService(MovieControllerInterface mci, MovieRepository mr, Movie movie) {
+        this.mci = mci;
+        this.mr = mr;
+        this.movie = movie;
+    }
 
     public Movie createMovie(Movie movie) {
         if (mr.findById(movie.getId()).isPresent()){
@@ -23,6 +33,10 @@ public class MovieService implements MovieServiceInterface{
 
     public Movie findMovieById(int id) {
        return mr.findById(id).orElseThrow(()->new NoSuchElementException("Movie not found"));
+    }
+
+    public List<Movie> findAllMovies(){
+        return mr.findAll();
     }
 
     public Movie updateMovie(Movie movie) {
