@@ -6,25 +6,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Service
 @Transactional
 public class CustomerService implements CustomerServiceInterface {
 
-    @Autowired
     CustomerRepository cr;
     Customer customer;
 
+    @Autowired
+    public CustomerService(CustomerRepository cr, Customer customer) {
+        this.cr = cr;
+        this.customer = customer;
+    }
+
     public Customer createCustomer(Customer customer) {
-       if (cr.findById(customer.getId()).isPresent()){
-           throw new IllegalArgumentException("Customer already exists");
-       }
+        if (customer.getId()!=-1 && cr.existsById(customer.getId())) {
+            throw new IllegalArgumentException("Customer already exists");
+        }
         return  cr.save(customer);
     }
 
     public void deleteCustomerById(int id) {
-        if (!cr.findById(customer.getId()).isPresent()){
+        if (!cr.existsById(id)){
             throw new NoSuchElementException("Customer doesn't exist");
         }
         cr.deleteById(id);
@@ -46,5 +51,10 @@ public class CustomerService implements CustomerServiceInterface {
         existingCustomer.setPassword(customer.getPassword());
 
         return cr.save(existingCustomer);
+    }
+
+    @Override
+    public List<Customer> findAll() {
+        return cr.findAll();
     }
 }

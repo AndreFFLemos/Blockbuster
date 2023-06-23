@@ -34,4 +34,13 @@ public class Customer {
     @OneToMany(mappedBy = "customer",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List <Rental> rentals;
 
+    public Customer(int id, String fName, String lName, String username, String password, String phone, String email) {
+        this.id = id;
+        this.fName = fName;
+        this.lName = lName;
+        this.username = username;
+        this.password = password;
+        this.phone = phone;
+        this.email = email;
+    }
 }
