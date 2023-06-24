@@ -34,7 +34,7 @@ class CustomerServiceTest {
 
     @BeforeEach
     public void setup(){
-        c=new Customer(1,"A","L","Uga","ok", "1234","a@a");
+        c=new Customer(1,"A","L","Uga","ok", 01234,"a@a");
     }
 
     @Test
@@ -54,23 +54,20 @@ class CustomerServiceTest {
 
     @Test
     void deleteCustomerByIdTest() {
+
         when(cr.existsById(1)).thenReturn(true); // simulates the existance of the customer
         doNothing().when(cr).deleteById(1); //when the delete method is invoked, do nothing because it returns a void
-
-        //action
        cs.deleteCustomerById(1);
+        verify(cr).deleteById(any());
 
-       //verification (verifies if the method was used or not)
-       verify(cr).deleteById(any());
     }
 
     @Test
     void findCustomerByIdTest() {
         when(cr.findById(any())).thenReturn(of(c));// it returns a container with a possible object
+        Optional<Customer> mockedC= cs.findCustomerById(1);
 
-        Customer mockedC= cs.findCustomerById(1);
-
-        assertEquals(mockedC,c);
+        assertEquals(mockedC,Optional.of(c));
         verify(cr).findById(any());
 
     }
@@ -108,6 +105,37 @@ class CustomerServiceTest {
         assertTrue(customerNotFound.isEmpty());
 
         verify(cr, times(2)).findByLastName(anyString()); //verify that the method was used 2 times
+    }
+
+    @Test
+    void findCustomerByPhone (){
+
+        //check when customer is present
+        when(cr.findByPhone(anyInt())).thenReturn(Optional.of(c));
+        Optional<Customer> mockedC= cs.findCustomerByPhone(01234);
+        assertEquals(Optional.of(c),mockedC);
+
+        //check when customer is not present
+        when(cr.findByPhone(anyInt())).thenReturn(Optional.empty());
+        Optional<Customer> customerNotFound= cs.findCustomerByPhone(11111);
+        assertTrue(customerNotFound.isEmpty());
+
+        verify(cr, times(2)).findByPhone(anyInt()); //verify that the method was used 2 times
+    }
+    @Test
+    void findCustomerByEmail (){
+
+        //check when customer is present
+        when(cr.findByEmail(anyString())).thenReturn(Optional.of(c));
+        Optional<Customer> mockedC= cs.findCustomerByEmail("a@a");
+        assertEquals(Optional.of(c),mockedC);
+
+        //check when customer is not present
+        when(cr.findByEmail(anyString())).thenReturn(Optional.empty());
+        Optional<Customer> customerNotFound= cs.findCustomerByEmail("b@b");
+        assertTrue(customerNotFound.isEmpty());
+
+        verify(cr, times(2)).findByEmail(anyString()); //verify that the method was used 2 times
     }
 
 @Test

@@ -1,6 +1,7 @@
 package Blockbuster.Model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Digits;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,13 +29,14 @@ public class Customer {
     @Column(name="hashedpass")
     private String password;
     @Column(name="phone")
-    private String phone;
+    @Digits(integer = 5,fraction = 0,message = "The number has to have 5 digits")
+    private int phone;
     @Column(name="email")
     private String email;
     @OneToMany(mappedBy = "customer",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List <Rental> rentals;
 
-    public Customer(int id, String fName, String lName, String username, String password, String phone, String email) {
+    public Customer(int id, String fName, String lName, String username, String password, int phone, String email) {
         this.id = id;
         this.fName = fName;
         this.lName = lName;

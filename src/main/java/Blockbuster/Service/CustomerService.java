@@ -37,8 +37,14 @@ public class CustomerService implements CustomerServiceInterface {
         cr.deleteById(id);
     }
 
-    public Customer findCustomerById(int id) {
-        return cr.findById(id).orElseThrow(()-> new NoSuchElementException("Customer not found."));
+    public Optional<Customer> findCustomerById(int id) {
+        Optional <Customer> foundCustomer=cr.findById(id);
+
+        if (foundCustomer.isEmpty()){
+            return Optional.empty();
+        }
+
+        return foundCustomer;
     }
 
     public Customer updateCustomer(Customer customer) {
@@ -83,5 +89,25 @@ public class CustomerService implements CustomerServiceInterface {
         }
         return foundCustomers;
 
+    }
+
+    @Override
+    public Optional<Customer> findCustomerByPhone(int phone) {
+        Optional <Customer> foundCustomer= cr.findByPhone(phone);
+
+        if (foundCustomer.isEmpty()) {
+            return Optional.empty();
+        }
+        return foundCustomer;
+    }
+
+    @Override
+    public Optional<Customer> findCustomerByEmail(String email) {
+        Optional <Customer> foundCustomer= cr.findByEmail(email);
+
+        if (foundCustomer.isEmpty()) {
+            return Optional.empty();
+        }
+        return foundCustomer;
     }
 }
