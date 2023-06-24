@@ -2,6 +2,7 @@ package Blockbuster.Model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,7 @@ public class Customer {
     @Column(name="username")
     private String username;
     @Column(name="hashedpass")
+    @Size(min = 8, max = 20)
     private String password;
     @Column(name="phone")
     @Digits(integer = 5,fraction = 0,message = "The number has to have 5 digits")
