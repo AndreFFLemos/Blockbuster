@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.Extension;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.internal.verification.Times;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
@@ -69,7 +70,41 @@ class CustomerServiceTest {
         verify(cr).findById(any());
 
     }
+    @Test
+    void findCustomerByFirstNameTest(){
+    List <Customer> customersFound= new LinkedList<>();
+    customersFound.add(c);
 
+        //check when customer is present
+        when(cr.findByFirstName(anyString())).thenReturn(customersFound);
+        List <Customer> mockedC= cs.findCustomerByFirstName("A");
+        assertTrue(mockedC.size()==1);
+
+        //check when customer is not present
+        when(cr.findByFirstName(anyString())).thenReturn(Collections.emptyList());
+        List<Customer> customerNotFound= cs.findCustomerByFirstName("T");
+        assertTrue(customerNotFound.isEmpty());
+
+        verify(cr, times(2)).findByFirstName(anyString()); //verify that the method was used 2 times
+    }
+
+    @Test
+    void findCustomerByLastNameTest(){
+        List <Customer> customersFound= new LinkedList<>();
+        customersFound.add(c);
+
+        //check when customer is present
+        when(cr.findByLastName(anyString())).thenReturn(customersFound);
+        List <Customer> mockedC= cs.findCustomerByLastName("L");
+        assertTrue(mockedC.size()==1);
+
+        //check when customer is not present
+        when(cr.findByLastName(anyString())).thenReturn(Collections.emptyList());
+        List<Customer> customerNotFound= cs.findCustomerByLastName("T");
+        assertTrue(customerNotFound.isEmpty());
+
+        verify(cr, times(2)).findByLastName(anyString()); //verify that the method was used 2 times
+    }
 
 @Test
 void findAll (){

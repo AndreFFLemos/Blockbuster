@@ -57,4 +57,29 @@ public class CustomerService implements CustomerServiceInterface {
     public List<Customer> findAll() {
         return cr.findAll();
     }
+
+    @Override
+    public List <Customer> findCustomerByFirstName(String firstName) {
+
+        List<Customer> foundCustomers= cr.findByFirstName(firstName);
+
+        if (foundCustomers.isEmpty())
+        {
+            return Collections.emptyList(); // if the name doesn't return customers, the repo returns an empty object
+        }
+        return foundCustomers;
+    }
+
+    @Override
+    public List<Customer> findCustomerByLastName(String lastName) {
+
+        List<Customer> foundCustomers= cr.findByLastName(lastName);
+
+        if (foundCustomers.isEmpty())
+        {
+            return Collections.emptyList(); // if the name doesn't return customers, the repo returns an empty object
+        }
+        return foundCustomers;
+
+    }
 }
