@@ -24,8 +24,8 @@ public class Movie {
     private int releaseYear;
     @Column (name="rating")
     private float rating;
-    @Column(name="cost")
-    private double cost;
+    @Column(name="price")
+    private int price;
     //mappedBy indica que o atributo movie da classe rental é a foreignkey e o cascade indica que uma
     // alteração em dado filme irá terrepercussoes em todos os rentals em que
     // esse filme estiver associado

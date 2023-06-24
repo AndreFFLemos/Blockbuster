@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -31,8 +33,14 @@ public class MovieService implements MovieServiceInterface{
         return mr.save(movie);
     }
 
-    public Movie findMovieById(int id) {
-       return mr.findById(id).orElseThrow(()->new NoSuchElementException("Movie not found"));
+    public Optional <Movie> findMovieById(int id) {
+        Optional <Movie> movie= mr.findById(id);
+
+        if (movie.isEmpty()){
+            return Optional.empty();
+        }
+
+        return movie;
     }
 
     public List<Movie> findAllMovies(){
@@ -46,7 +54,7 @@ public class MovieService implements MovieServiceInterface{
             existingMovie.setGenre(movie.getGenre());
             existingMovie.setRating(movie.getRating());
             existingMovie.setReleaseYear(movie.getReleaseYear());
-            existingMovie.setCost(movie.getCost());
+            existingMovie.setPrice(movie.getPrice());
 
             return mr.save(existingMovie);
     }
@@ -54,5 +62,42 @@ public class MovieService implements MovieServiceInterface{
     public void deleteMovieById(int id) {
         Movie existingMovie= mr.findById(id).orElseThrow(()-> new IllegalArgumentException("Movie not found"));
         mr.deleteById(existingMovie.getId());
+    }
+
+    @Override
+    public List<Movie> findMovieByTitle(String title) {
+        List <Movie> movies= mr.findMovieByTitle(title);
+        if (movies.isEmpty()){
+            return Collections.emptyList(); // if no movie is found, it returns an empty Collection
+        }
+        return movies;
+    }
+
+    @Override
+    public List<Movie> findMoviesByYear(int year) {
+        List <Movie> movies= mr.findMoviesByYear(year);
+        if (movies.isEmpty()){
+            return Collections.emptyList();
+        }
+
+        return movies;
+    }
+
+    @Override
+    public List<Movie> findMoviesByGenre(String genre) {
+        List <Movie> movies= mr.findMoviesByGenre(genre);
+        if (movies.isEmpty()){
+            return Collections.emptyList();
+        }
+        return movies;
+    }
+
+    @Override
+    public List<Movie> findMoviesByPrice(int price) {
+        List <Movie> movies= mr.findMoviesByPrice(price);
+        if (movies.isEmpty()){
+            return Collections.emptyList();
+        }
+        return movies;
     }
 }

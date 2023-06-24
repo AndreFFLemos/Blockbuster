@@ -1,5 +1,6 @@
 package Blockbuster.Service;
 
+import Blockbuster.Model.Customer;
 import Blockbuster.Model.Movie;
 import Blockbuster.Repository.MovieRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,9 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.annotation.ComponentScan;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -45,10 +44,10 @@ class MovieServiceTest {
     }
 
     @Test
-    void findMovieById() {
+    void findMovieByIdTest() {
         movie.setId(1);
     when(mr.findById(1)).thenReturn(Optional.of(movie));
-    Movie mockedM= ms.findMovieById(1);
+    Optional<Movie> mockedM= ms.findMovieById(1);
 
     assertEquals(mockedM,movie);
     verify(mr).findById(anyInt());
@@ -91,5 +90,109 @@ class MovieServiceTest {
 
         ms.deleteMovieById(1);
         verify(mr).deleteById(anyInt());
+    }
+
+    @Test
+    void findMovieByTitle (){
+        movie.setTitle("Rambo");
+        Movie movie1= new Movie();
+        Movie movie2= new Movie();
+        movie1.setTitle("Rambo1");
+        movie2.setTitle("Matrix");
+
+        List <Movie> movies= new LinkedList<>();
+        movies.add(movie);
+        movies.add(movie1);
+        movies.add(movie2);
+
+        //check when movie is present
+        when(mr.findMovieByTitle(anyString())).thenReturn(movies);
+        List<Movie> mockedM= ms.findMovieByTitle("Rambo");
+        assertTrue(mockedM.contains(movie));
+
+        //check when movie is not present
+        when(mr.findMovieByTitle(anyString())).thenReturn(Collections.emptyList());
+        List<Movie> movieNotFound= ms.findMovieByTitle("ET");
+        assertTrue(movieNotFound.isEmpty());
+
+        verify(mr, times(2)).findMovieByTitle(anyString());
+    }
+
+    @Test
+    void findMoviesByGenre(){
+        movie.setGenre("Action");
+        Movie m1=new Movie();
+        m1.setGenre("Drama");;
+        Movie m2=new Movie();
+        m2.setGenre("Action");;
+
+        List <Movie> movies= new LinkedList<>();
+        movies.add(movie);
+        movies.add(m1);
+        movies.add(m2);
+
+        //check when movie is present
+        when(mr.findMoviesByGenre(anyString())).thenReturn(movies);
+        List<Movie> mockedM= ms.findMoviesByGenre("Action");
+        assertTrue(mockedM.contains(movie));
+
+        //check when movie is not present
+        when(mr.findMoviesByGenre(anyString())).thenReturn(Collections.emptyList());
+        List<Movie> movieNotFound= ms.findMoviesByGenre("War");
+        assertTrue(movieNotFound.isEmpty());
+
+        verify(mr, times(2)).findMoviesByGenre(anyString());
+    }
+
+    @Test
+    void findMovieByYear(){
+        movie.setReleaseYear(1988);
+        Movie m1=new Movie();
+        m1.setReleaseYear(1900);
+        Movie m2=new Movie();
+        m2.setReleaseYear(2000);
+
+        List <Movie> movies= new LinkedList<>();
+        movies.add(movie);
+        movies.add(m1);
+        movies.add(m2);
+
+        //check when movie is present
+        when(mr.findMoviesByYear(anyInt())).thenReturn(movies);
+        List<Movie> mockedM= ms.findMoviesByYear(1988);
+        assertTrue(mockedM.contains(movie));
+
+        //check when movie is not present
+        when(mr.findMoviesByYear(anyInt())).thenReturn(Collections.emptyList());
+        List<Movie> movieNotFound= ms.findMoviesByYear(1990);
+        assertTrue(movieNotFound.isEmpty());
+
+        verify(mr, times(2)).findMoviesByYear(anyInt());
+    }
+
+    @Test
+    void findMovieByPrice(){
+        movie.setPrice(2);
+        Movie m1=new Movie();
+        m1.setPrice(2);
+        Movie m2=new Movie();
+        m2.setPrice(1);
+
+        List <Movie> movies= new LinkedList<>();
+        movies.add(movie);
+        movies.add(m1);
+        movies.add(m2);
+
+        //check when movie is present
+        when(mr.findMoviesByPrice(anyInt())).thenReturn(movies);
+        List<Movie> mockedM= ms.findMoviesByPrice(2);
+        assertTrue(mockedM.contains(movie));
+
+        //check when movie is not present
+        when(mr.findMoviesByPrice(anyInt())).thenReturn(Collections.emptyList());
+        List<Movie> movieNotFound= ms.findMoviesByPrice(1990);
+        assertTrue(movieNotFound.isEmpty());
+
+        verify(mr, times(2)).findMoviesByPrice(anyInt());
     }
 }
