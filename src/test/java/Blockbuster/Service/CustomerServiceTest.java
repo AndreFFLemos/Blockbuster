@@ -39,13 +39,17 @@ class CustomerServiceTest {
 
     @Test
     void createCustomerTest() {
-
+        // test when customer doesn't exist
         when (cr.save(c)).thenReturn(c);
-        Customer mockedC=cs.createCustomer(c);
-        System.out.println(mockedC);
+        Optional <Customer> mockedC=cs.createCustomer(c);
+        assertEquals(Optional.of(c),mockedC);
 
-        assertEquals(c,mockedC);
-        verify(cr).save(c);
+        //test when customer already exists
+        when(cr.findById(1)).thenReturn(Optional.of(c)); //When the customer already exists, the method will return an empty optional
+        Optional<Customer> existingC= cs.createCustomer(c); //this method invokes the cr.findbyid and then returns empty
+        assertTrue(existingC.isEmpty());
+
+        verify(cr,times(1)).save(c); //the number of times the cr.save method is really used.
     }
 
     @Test

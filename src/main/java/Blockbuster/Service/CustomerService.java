@@ -21,11 +21,13 @@ public class CustomerService implements CustomerServiceInterface {
         this.customer = customer;
     }
 
-    public Customer createCustomer(Customer customer) {
-        if (customer.getId()!=-1 && cr.existsById(customer.getId())) {
-            throw new IllegalArgumentException("Customer already exists");
+    public Optional<Customer> createCustomer(Customer customer) {
+        Optional <Customer> customerExists= cr.findById(customer.getId());
+
+        if (customerExists.isPresent()) {
+            return Optional.empty(); //if the customer is in the DB then the method will return an empty container meaning no saved C.
         }
-        return  cr.save(customer);
+        return  Optional.of(cr.save(customer)); //returns a container with the saved object
     }
 
     public void deleteCustomerById(int id) {

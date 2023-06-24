@@ -5,15 +5,15 @@ import Blockbuster.Service.CustomerServiceInterface;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class CustomerController implements CustomerControllerInterface {
+public abstract class CustomerController implements CustomerControllerInterface {
 
     private CustomerServiceInterface csi;
-
+/*
     @Override
     public Customer findCustomer(Customer customer) {
         return csi.createCustomer(customer);
     }
-
+*/
     @Override
     public Customer updateCustomer(Customer customer) {
         return null;
