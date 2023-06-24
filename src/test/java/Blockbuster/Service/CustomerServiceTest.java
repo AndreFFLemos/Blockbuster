@@ -2,19 +2,18 @@ package Blockbuster.Service;
 
 import Blockbuster.Model.Customer;
 import Blockbuster.Repository.CustomerRepository;
+import Blockbuster.Validation.CustomerValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.Extension;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.internal.verification.Times;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
-
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
 import java.util.*;
-
 import static java.util.Optional.of;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,6 +28,7 @@ class CustomerServiceTest {
     CustomerRepository cr;
     @InjectMocks
     CustomerService cs;
+    private Validator validator=new CustomerValidator();
 
     Customer c;
 
@@ -170,5 +170,49 @@ void findAll (){
 
         verify(cr).save(any(Customer.class));
     }
+    @Test
+    void validEmailAddress() {
+        Customer customer = new Customer();
+        customer.setEmail("andre@email.com");
 
+        Errors errors = new BeanPropertyBindingResult(customer, "customer");
+        validator.validate(customer, errors);
+
+        assertFalse(errors.hasErrors());
+    }
+
+    @Test
+    void invalidEmailAddress() {
+        Customer customer = new Customer();
+        customer.setEmail("invalid-email");
+
+        Errors errors = new BeanPropertyBindingResult(customer, "customer");
+        validator.validate(customer, errors);
+
+        assertTrue(errors.hasFieldErrors("email"));
+        assertEquals("field.invalidFormat", errors.getFieldError("email").getCode());
+    }
+    @Test
+    void emptyEmailAddress() {
+        Customer customer = new Customer();
+        customer.setEmail("");
+
+        Errors errors = new BeanPropertyBindingResult(customer, "customer");
+        validator.validate(customer, errors);
+
+        assertTrue(errors.hasFieldErrors("email"));
+        assertEquals("Email must not be empty", errors.getFieldError("email").getDefaultMessage());
+    }
+
+    @Test
+    void nullEmailAddress() {
+        Customer customer = new Customer();
+        customer.setEmail(null);
+
+        Errors errors = new BeanPropertyBindingResult(customer, "customer");
+        validator.validate(customer, errors);
+
+        assertTrue(errors.hasFieldErrors("email"));
+        assertEquals("Email must not be empty", errors.getFieldError("email").getDefaultMessage());
+    }
 }

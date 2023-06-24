@@ -1,5 +1,7 @@
 package Blockbuster.Service;
 
+import Blockbuster.Model.Customer;
+import Blockbuster.Model.Movie;
 import Blockbuster.Model.Rental;
 import Blockbuster.Repository.RentalRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.annotation.ComponentScan;
 
+import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +27,10 @@ import static org.mockito.Mockito.*;
 class RentalServiceTest {
 
     private Rental rental;
+    private Customer customer;
+    private Movie movie;
+    private LocalDate rentalDate;
+
     @Mock
     private RentalRepository rr;
     @InjectMocks
@@ -31,10 +38,17 @@ class RentalServiceTest {
 
     @BeforeEach
     void setup(){
+        customer=new Customer();
+        movie=new Movie();
+        rentalDate=LocalDate.now();
         rental=new Rental();
+        rental.setId(1);
+        rental.setCustomer(customer);
+        rental.setMovie(movie);
+        rental.setRentalDate(rentalDate);
     }
     @Test
-    void createRental() {
+    void createRentalTest() {
 
         when(rr.save(rental)).thenReturn(rental);
         Rental mockedR= rs.createRental(rental);
@@ -44,7 +58,7 @@ class RentalServiceTest {
     }
 
     @Test
-    void deleteRentalById() {
+    void deleteRentalByIdTest() {
         rental.setId(1);
         when(rr.findById(anyInt())).thenReturn(Optional.of(rental));
         doNothing().when(rr).deleteById(anyInt());
@@ -54,19 +68,18 @@ class RentalServiceTest {
     }
 
     @Test
-    void findRentalById() {
-        rental.setId(1);
+    void findRentalByIdTest() {
+
         when(rr.findById(1)).thenReturn(Optional.of(rental));
 
         Rental mockedR= rs.findRentalById(1);
         assertEquals(mockedR,rental);
 
-
         verify(rr).findById(anyInt());
     }
 
     @Test
-    void findAllRentals(){
+    void findAllRentalsTest(){
         Rental r1=new Rental();
         List<Rental> rentals= new LinkedList<>();
         rentals.add(rental);
@@ -78,4 +91,6 @@ class RentalServiceTest {
         assertEquals(2,mockedR.size());
         verify(rr).findAll();
     }
+
+
 }

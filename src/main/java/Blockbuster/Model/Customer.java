@@ -2,15 +2,14 @@ package Blockbuster.Model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+
 
 @Data //Lombok takes care of the getters and setters
 @NoArgsConstructor
@@ -34,6 +33,8 @@ public class Customer {
     @Digits(integer = 5,fraction = 0,message = "The number has to have 5 digits")
     private int phone;
     @Column(name="email")
+    @NotEmpty(message = "This field should not be empty")
+    @Email(message = "Wrong format")
     private String email;
     @OneToMany(mappedBy = "customer",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List <Rental> rentals;
