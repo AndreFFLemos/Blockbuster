@@ -4,8 +4,11 @@ import Blockbuster.Model.Customer;
 import Blockbuster.Model.Rental;
 import Blockbuster.Service.RentalServiceInterface;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
+@RequestMapping(value = "/api/rental")
 public class RentalController implements RentalControllerInterface {
 
     private Customer customer;

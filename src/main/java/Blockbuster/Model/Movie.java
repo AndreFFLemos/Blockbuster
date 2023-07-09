@@ -1,6 +1,7 @@
 package Blockbuster.Model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Digits;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ public class Movie {
     @Column (name="rating")
     private float rating;
     @Column(name="price")
+    @Digits(integer = 1,fraction = 0,message = "Price should be lower than 10")
     private int price;
     //mappedBy indica que o atributo movie da classe rental é a foreignkey e o cascade indica que uma
     // alteração em dado filme irá terrepercussoes em todos os rentals em que
