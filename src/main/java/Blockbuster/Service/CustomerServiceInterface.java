@@ -3,10 +3,8 @@ package Blockbuster.Service;
 import Blockbuster.DTO.CustomerDto;
 import Blockbuster.Model.Customer;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 public interface CustomerServiceInterface {
 

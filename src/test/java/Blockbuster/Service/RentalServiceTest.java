@@ -1,7 +1,6 @@
 package Blockbuster.Service;
 
 import Blockbuster.Model.Customer;
-import Blockbuster.Model.Movie;
 import Blockbuster.Model.Rental;
 import Blockbuster.Repository.RentalRepository;
 import org.junit.jupiter.api.BeforeEach;

@@ -2,7 +2,6 @@ package Blockbuster.View;
 
 import Blockbuster.Controller.CustomerController;
 import Blockbuster.Model.Customer;
-import Blockbuster.Repository.CustomerRepository;
 
 public class CustomerView {
     private Customer customer;

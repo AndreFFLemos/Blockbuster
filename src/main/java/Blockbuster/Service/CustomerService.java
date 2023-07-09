@@ -7,7 +7,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.ModelMap;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,6 +27,8 @@ public class CustomerService implements CustomerServiceInterface {
     public Optional<CustomerDto> createCustomer(CustomerDto customerDto) {
         //if the customer is in the DB then the method will return an empty container meaning no saved Customer
         Optional <Customer> customerExists= cr.findById(customerDto.getPhone());
+
+        //it's cheaper in terms of resources to return an optional  than an throwing an exception for something that can be normal
         if (customerExists.isPresent()) {
             return Optional.empty();
         }

@@ -1,5 +1,6 @@
 package Blockbuster.Service;
 
+import Blockbuster.DTO.MovieDto;
 import Blockbuster.Model.Movie;
 
 import java.util.List;
@@ -7,13 +8,13 @@ import java.util.Optional;
 
 public interface MovieServiceInterface {
 
-    Movie createMovie(Movie movie);
-    Optional <Movie> findMovieById(int id);
-    Movie updateMovie(Movie movie);
+    Optional<MovieDto> createMovie(MovieDto movieDto);
+    Optional <MovieDto> findMovieById(int id);
+    Optional<MovieDto> updateMovie(MovieDto movieDto);
     void deleteMovieById(int id);
-    List<Movie> findMovieByTitle (String title);
-    List <Movie> findMoviesByYear (int year);
-    List <Movie> findMoviesByGenre (String genre);
-    List<Movie> findMoviesByPrice (int price);
+    Optional<MovieDto> findMovieByTitle (String title);
+    List <MovieDto> findMoviesByYear (int year);
+    List <MovieDto> findMoviesByGenre (String genre);
+    List<MovieDto> findMoviesByPrice (int price);
 
 }

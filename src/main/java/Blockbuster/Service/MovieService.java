@@ -1,8 +1,11 @@
 package Blockbuster.Service;
 
-import Blockbuster.Controller.MovieControllerInterface;
+import Blockbuster.DTO.CustomerDto;
+import Blockbuster.DTO.MovieDto;
+import Blockbuster.Model.Customer;
 import Blockbuster.Model.Movie;
 import Blockbuster.Repository.MovieRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,93 +14,128 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class MovieService implements MovieServiceInterface{
-    private MovieControllerInterface mci;
+
     private MovieRepository mr;
-    private Movie movie;
+    ModelMapper modelMapper;
 
     @Autowired
-    public MovieService(MovieControllerInterface mci, MovieRepository mr, Movie movie) {
-        this.mci = mci;
+    public MovieService(MovieRepository mr, ModelMapper modelMapper) {
         this.mr = mr;
-        this.movie = movie;
+        this.modelMapper = modelMapper;
     }
 
-    public Movie createMovie(Movie movie) {
-        if (mr.findById(movie.getId()).isPresent()){
-            throw new IllegalArgumentException("Movie already present");
+    public Optional<MovieDto> createMovie(MovieDto movieDto) {
+        //if the movie is in the DB then the method will return an empty container meaning no saved movie
+        Optional <Movie> movie= mr.findMovieByTitle(movieDto.getTitle());
+        if (movie.isPresent()) {
+            return Optional.empty();
         }
-        return mr.save(movie);
+
+        //convert the customerDto instance to a POJO instance and save the latter to the customer variable
+        Movie movie1= modelMapper.map(movieDto, Movie.class);
+        //tell the repository to persist the customer instance and save that instance on the customer variable
+        movie1= mr.save(movie1);
+
+        //convert that persisted instance back in to a DTO object
+        MovieDto movieDto1= modelMapper.map(movie1,MovieDto.class);
+
+        return  Optional.of(movieDto1);
     }
 
-    public Optional <Movie> findMovieById(int id) {
+    public Optional<MovieDto> findMovieById(int id) {
         Optional <Movie> movie= mr.findById(id);
 
         if (movie.isEmpty()){
             return Optional.empty();
         }
-
-        return movie;
+        MovieDto movieDto= modelMapper.map(movie,MovieDto.class);
+        return Optional.of(movieDto);
     }
 
-    public List<Movie> findAllMovies(){
-        return mr.findAll();
+    public List<MovieDto> findAllMovies(){
+        List <Movie>movies = mr.findAll();
+
+        return movies.stream()
+                .map(movie -> modelMapper.map(movies,MovieDto.class))
+                .collect(Collectors.toList());
     }
 
-    public Movie updateMovie(Movie movie) {
-            Movie existingMovie= mr.findById(movie.getId()).orElseThrow(()-> new NoSuchElementException("Movie not found"));
+    public Optional<MovieDto> updateMovie(MovieDto movieDto) {
+           Optional <Movie> existingMovie= mr.findMovieByTitle(movieDto.getTitle());
 
-            existingMovie.setTitle(movie.getTitle());
-            existingMovie.setGenre(movie.getGenre());
-            existingMovie.setRating(movie.getRating());
-            existingMovie.setReleaseYear(movie.getReleaseYear());
-            existingMovie.setPrice(movie.getPrice());
+           if (existingMovie.isEmpty()){
+               return Optional.empty();
+           }
 
-            return mr.save(existingMovie);
+           //because the movie exists in the DB, repo delete it
+            mr.deleteByTitle(movieDto.getTitle());
+           //convert the movieDto to movie and then repo persist it
+            Movie movie= modelMapper.map(movieDto,Movie.class);
+            movie=mr.save(movie);
+            //convert that persisted movie to movie Dto and return it
+            MovieDto movieDto1=modelMapper.map(movie,MovieDto.class);
+
+            return Optional.of(movieDto1);
     }
 
     public void deleteMovieById(int id) {
-        Movie existingMovie= mr.findById(id).orElseThrow(()-> new IllegalArgumentException("Movie not found"));
-        mr.deleteById(existingMovie.getId());
-    }
-
-    @Override
-    public List<Movie> findMovieByTitle(String title) {
-        List <Movie> movies= mr.findMovieByTitle(title);
-        if (movies.isEmpty()){
-            return Collections.emptyList(); // if no movie is found, it returns an empty Collection
+        Optional<Movie> existingMovie= mr.findById(id);
+        if (existingMovie.isEmpty()){
+            System.out.println("Movie doesn't exist");
         }
-        return movies;
+
+        mr.deleteById(existingMovie.get().getId());
     }
 
     @Override
-    public List<Movie> findMoviesByYear(int year) {
+    public Optional<MovieDto> findMovieByTitle(String title) {
+        Optional <Movie> movie= mr.findMovieByTitle(title);
+        if (movie.isEmpty()) {
+            return Optional.empty();
+        }
+
+        MovieDto movieDto= modelMapper.map(movie,MovieDto.class);
+
+        return Optional.of(movieDto);
+
+    }
+
+    @Override
+    public List<MovieDto> findMoviesByYear(int year) {
         List <Movie> movies= mr.findMoviesByYear(year);
         if (movies.isEmpty()){
             return Collections.emptyList();
         }
 
-        return movies;
+
+        return movies.stream()
+                .map(movie -> modelMapper.map(movie,MovieDto.class))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Movie> findMoviesByGenre(String genre) {
+    public List<MovieDto> findMoviesByGenre(String genre) {
         List <Movie> movies= mr.findMoviesByGenre(genre);
         if (movies.isEmpty()){
             return Collections.emptyList();
         }
-        return movies;
-    }
+        return movies.stream()
+                .map(movie -> modelMapper.map(movie,MovieDto.class))
+                .collect(Collectors.toList());    }
 
     @Override
-    public List<Movie> findMoviesByPrice(int price) {
+    public List<MovieDto> findMoviesByPrice(int price) {
         List <Movie> movies= mr.findMoviesByPrice(price);
         if (movies.isEmpty()){
             return Collections.emptyList();
         }
-        return movies;
+        return movies.stream()
+                .map(movie -> modelMapper.map(movie,MovieDto.class))
+                .collect(Collectors.toList());
     }
 }

@@ -1,7 +1,6 @@
 package Blockbuster.Model;
 
 import Blockbuster.Model.Customer;
-import Blockbuster.Model.Movie;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
