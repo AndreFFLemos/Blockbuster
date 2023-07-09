@@ -1,5 +1,6 @@
 package Blockbuster.Service;
 
+import Blockbuster.DTO.CustomerDto;
 import Blockbuster.Model.Customer;
 
 import java.awt.*;
@@ -9,14 +10,13 @@ import java.util.Set;
 
 public interface CustomerServiceInterface {
 
-    Optional<Customer> createCustomer(Customer customer);
-    void deleteCustomerById(int id);
-    Optional<Customer> findCustomerById(int id);
-    Customer updateCustomer(Customer customer);
-    List<Customer> findAll();
-    List<Customer> findCustomerByFirstName(String name);
-    List<Customer> findCustomerByLastName(String l);
-    Optional <Customer> findCustomerByPhone(int i);
-
-    Optional<Customer> findCustomerByEmail(String email);
+    Optional<CustomerDto> createCustomer(CustomerDto customerDto);
+    void deleteCustomer(CustomerDto customerDto);
+    Optional<CustomerDto> findCustomerById(int id);
+    Optional<CustomerDto> updateCustomer(CustomerDto customerDto);
+    List<CustomerDto> findAll();
+    List<CustomerDto> findCustomerByFirstName(String name);
+    List<CustomerDto> findCustomerByLastName(String l);
+    Optional <CustomerDto> findCustomerByPhone(int i);
+    Optional<CustomerDto> findCustomerByEmail(String email);
 }

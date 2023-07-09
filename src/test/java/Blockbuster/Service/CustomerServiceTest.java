@@ -1,5 +1,6 @@
 package Blockbuster.Service;
 
+import Blockbuster.DTO.CustomerDto;
 import Blockbuster.Model.Customer;
 import Blockbuster.Repository.CustomerRepository;
 import Blockbuster.Validation.CustomerValidator;
@@ -57,7 +58,7 @@ class CustomerServiceTest {
 
         when(cr.existsById(1)).thenReturn(true); // simulates the existance of the customer
         doNothing().when(cr).deleteById(1); //when the delete method is invoked, do nothing because it returns a void
-       cs.deleteCustomerById(1);
+       cs.deleteCustomer(1);
         verify(cr).deleteById(any());
 
     }
@@ -65,7 +66,7 @@ class CustomerServiceTest {
     @Test
     void findCustomerByIdTest() {
         when(cr.findById(any())).thenReturn(of(c));// it returns a container with a possible object
-        Optional<Customer> mockedC= cs.findCustomerById(1);
+        Optional<CustomerDto> mockedC= cs.findCustomerById(1);
 
         assertEquals(mockedC,Optional.of(c));
         verify(cr).findById(any());
@@ -150,7 +151,7 @@ void findAll (){
     customers.add(c3);
 
     when (cr.findAll()).thenReturn(customers);
-    List<Customer> mockCustomers= cs.findAll();
+    List<CustomerDto> mockCustomers= cs.findAll();
 
     assertTrue(mockCustomers.size()==3);
     verify(cr).findAll();
@@ -163,10 +164,10 @@ void findAll (){
 
         when(cr.findById(1)).thenReturn(Optional.of(c)); //guarantee that the method returns an existing customer
         when(cr.save(any(Customer.class))).thenReturn(c);
-        Customer mockC= cs.updateCustomer(c);
+        CustomerDto mockC= cs.updateCustomer(c);
 
-        assertEquals("B",mockC.getFName());
-        assertEquals("P",mockC.getLName());
+        assertEquals("B",mockC.getFirstN());
+        assertEquals("P",mockC.getLastN());
 
         verify(cr).save(any(Customer.class));
     }
