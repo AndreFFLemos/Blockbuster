@@ -50,26 +50,27 @@ class CustomerServiceTest {
     void createCustomerTest() {
 
             // test when customer doesn't exist
-            when(cr.findById(customerDto.getPhone())).thenReturn(Optional.empty());  // There's no customer with this number
+            when(cr.findById(5)).thenReturn(Optional.empty());  // There's no customer with this number
             when(cr.save(any(Customer.class))).thenReturn(customer);  // By saving any customer, return the predefined customer
             Optional<CustomerDto> mockedC = cs.createCustomer(customerDto);
             assertEquals(Optional.of(customerDtoSaved), mockedC);  // Is the returned dto the same as the saved one?
 
             //test when customer already exists
-            when(cr.findById(customerDto.getPhone())).thenReturn(Optional.of(customer)); //When the customer already exists
+            when(cr.findById(1)).thenReturn(Optional.of(customer)); //When the customer already exists
             Optional<CustomerDto> existingC = cs.createCustomer(customerDto); //invoke the cr.findById and then returns empty as defined in the customerService
             assertTrue(existingC.isEmpty());
 
-            verify(cr, times(1)).save(any(Customer.class)); //the number of times the cr.save method is really used.
+            verify(cr, times(1)).save(customer); //the number of times the cr.save method is really used.
         }
 
     @Test
     void deleteCustomerByIdTest() {
+        customer.setId(1);
 
-        when(cr.findByPhone(1234)).thenReturn(Optional.of(customer)); // simulates the existance of the customer
+        when(cr.findById(1)).thenReturn(Optional.of(customer)); // simulates the existance of the customer
         doNothing().when(cr).deleteById(1); //when the delete method is invoked, do nothing because it returns a void
        cs.deleteCustomer(customerDto);
-        verify(cr).deleteById(any());
+        verify(cr).deleteById(1);
 
     }
 
