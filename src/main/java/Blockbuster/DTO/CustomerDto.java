@@ -5,9 +5,20 @@ import Blockbuster.Model.Customer;
 public class CustomerDto {
     private String firstN;
     private String lastN;
-    private Customer username;
+    private String username;
     private String email;
     private int phone;
+
+    public CustomerDto(String firstN, String lastN, String username,int phone, String email) {
+        this.firstN = firstN;
+        this.lastN = lastN;
+        this.username = username;
+        this.phone = phone;
+        this.email = email;
+    }
+    public CustomerDto(){
+
+    }
 
     public String getFirstN() {
         return firstN;
@@ -25,11 +36,11 @@ public class CustomerDto {
         this.lastN = lastN;
     }
 
-    public Customer getUsername() {
+    public String getUsername() {
         return username;
     }
 
-    public void setUsername(Customer username) {
+    public void setUsername(String username) {
         this.username = username;
     }
 

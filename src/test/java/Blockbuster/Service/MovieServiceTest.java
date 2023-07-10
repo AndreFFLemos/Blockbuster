@@ -19,7 +19,6 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@ComponentScan(basePackages = "Blockbuster")
 class MovieServiceTest {
 
     private Movie movie;

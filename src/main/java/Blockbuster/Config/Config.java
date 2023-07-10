@@ -1,6 +1,7 @@
 package Blockbuster.Config;
 
 import Blockbuster.Model.Customer;
+import Blockbuster.Model.Movie;
 import Blockbuster.Model.Rental;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -24,7 +24,7 @@ public class CustomerController implements CustomerControllerInterface {
 
         csi.findCustomerById(id);
 
-        return new ResponseEntity<>();
+        return null;
     }
 
     @Override

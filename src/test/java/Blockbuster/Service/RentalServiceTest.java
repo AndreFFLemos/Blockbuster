@@ -1,6 +1,7 @@
 package Blockbuster.Service;
 
 import Blockbuster.Model.Customer;
+import Blockbuster.Model.Movie;
 import Blockbuster.Model.Rental;
 import Blockbuster.Repository.RentalRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +23,6 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@ComponentScan(basePackages = "Blockbuster")
 class RentalServiceTest {
 
     private Rental rental;

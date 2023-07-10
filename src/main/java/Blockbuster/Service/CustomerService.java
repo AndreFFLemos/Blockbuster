@@ -100,7 +100,6 @@ public class CustomerService implements CustomerServiceInterface {
     public List <CustomerDto> findCustomerByFirstName(String firstName) {
 
         List<Customer> customers= cr.findByFirstName(firstName);
-
         if (customers.isEmpty())
         {
             return Collections.emptyList(); // if the name doesn't return customers, the repo returns an empty container
