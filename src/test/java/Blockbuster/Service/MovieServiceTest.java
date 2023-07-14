@@ -102,27 +102,33 @@ class MovieServiceTest {
 
     @Test
     void updateMovieTest() {
-        movie.setId(1);
-        movie.setTitle("Rambo");
-        movie.setGenre("Action");
+        Movie updatedMovie= new Movie(0,"Matrix","Action",1999,8.0);
+        MovieDto updatedMovieDto= new MovieDto("Matrix","Action",1999,8.0);
 
-        when(mr.findById(1)).thenReturn(Optional.of(movie)); //when findById gets used then it returns
-        when(mr.save(movie)).thenReturn(movie); //when a movie is saved by the repo then return that movie
+        //when the movie exists
+        when(mr.findMovieByTitle("Matrix")).thenReturn(Optional.of(updatedMovie)); //when findById gets used then it returns
+        when(mr.save(updatedMovie)).thenReturn(updatedMovie); //when a movie is saved by the repo then return that movie
+        Optional<MovieDto> mockedM= ms.updateMovie(updatedMovieDto);
+        assertEquals("Matrix",mockedM.get().getTitle());
 
-        Optional<MovieDto> mockedM= ms.updateMovie(movieDto);
+        //when the movie doesn't exist
+        when (mr.findMovieByTitle("ET")).thenReturn(Optional.empty());
+        ms.updateMovie(new MovieDto("ET","adventure",1980,8.0));
 
-        assertEquals("Rambo",mockedM.get().getTitle());
-        verify(mr).save(movie);
+        verify(mr).save(updatedMovie);
+        verify(mr).deleteByTitle("Matrix");
+        verify(mr).findMovieByTitle("Matrix");
+        verify(mr).findMovieByTitle("ET");
+
     }
 
     @Test
     void deleteMovieByIdTest() {
-        movie.setId(1);
-        when(mr.findById(1)).thenReturn(Optional.of(movie));
-        doNothing().when(mr).deleteById(1);
+        when(mr.findById(0)).thenReturn(Optional.of(movie));
+        doNothing().when(mr).deleteById(0);
 
-        ms.deleteMovieById(1);
-        verify(mr).deleteById(1);
+        ms.deleteMovieById(0);
+        verify(mr).deleteById(0);
     }
 
     @Test
