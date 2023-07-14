@@ -16,6 +16,5 @@ public interface MovieControllerInterface {
     ResponseEntity<List<MovieDto>> findMoviesByGenre(String genre);
     ResponseEntity<MovieDto>  updateMovie(Movie movie);
     void deleteMovie(Movie movie);
-    ResponseEntity<List<Rental>> findRentalByMovie(Movie movie);
 
 }

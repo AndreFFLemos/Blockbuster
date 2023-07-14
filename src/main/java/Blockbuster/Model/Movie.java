@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -25,11 +26,9 @@ public class Movie {
     private int releaseYear;
     @Column (name="rating")
     private double rating;
-    //mappedBy indica que o atributo movie da classe rental é a foreignkey e o cascade indica que uma
-    // alteração em dado filme irá terrepercussoes em todos os rentals em que
-    // esse filme estiver associado
-    @OneToMany(mappedBy = "movie",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<Rental> rentals;
+    //the mappedBy attribute indicates that the relationship is managed by the customer side
+    @ManyToMany(mappedBy = "watchedMovies")
+    private List<Customer> viewers= new ArrayList<>();
 
     public Movie(int id, String title, String genre, int releaseYear, double rating) {
         this.id = id;

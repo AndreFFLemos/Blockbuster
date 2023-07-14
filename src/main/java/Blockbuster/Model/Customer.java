@@ -8,6 +8,8 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -36,8 +38,20 @@ public class Customer {
     @NotEmpty(message = "This field should not be empty")
     @Email(message = "Wrong format")
     private String email;
+    @ManyToMany
+    @JoinTable(
+            name = "customer_movie",
+            joinColumns = @JoinColumn(name = "customer_id"),
+            inverseJoinColumns = @JoinColumn(name = "movie_id"))
+    private List <Movie> watchedMovies= new ArrayList<>();//arraylist use less memory and is quicker with large lists
 
-   // @OneToMany(mappedBy = "customer",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    //private List <Rental> rentals;
-
+    public Customer(int id, String fName, String lName, String username, String password, int phone, String email) {
+        this.id = id;
+        this.fName = fName;
+        this.lName = lName;
+        this.username = username;
+        this.password = password;
+        this.phone = phone;
+        this.email = email;
+    }
 }

@@ -1,6 +1,7 @@
 package Blockbuster.Controller;
 
 import Blockbuster.DTO.CustomerDto;
+import Blockbuster.DTO.MovieDto;
 import Blockbuster.Model.Customer;
 import org.springframework.http.ResponseEntity;
 
@@ -16,6 +17,6 @@ public interface CustomerControllerInterface {
     ResponseEntity<CustomerDto> updateCustomer(Customer customer);
     ResponseEntity<CustomerDto> createCustomer(Customer customer);
     void deleteCustomer(Customer customer);
-    ResponseEntity <List<Rental>> findRentalsByCustomer(Customer customer);
+    ResponseEntity <List<MovieDto>> findMoviesByCustomer(Customer customer);
 
 }

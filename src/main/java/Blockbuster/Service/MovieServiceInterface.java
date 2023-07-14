@@ -1,5 +1,6 @@
 package Blockbuster.Service;
 
+import Blockbuster.DTO.CustomerDto;
 import Blockbuster.DTO.MovieDto;
 import Blockbuster.Model.Movie;
 
@@ -15,6 +16,7 @@ public interface MovieServiceInterface {
     Optional<MovieDto> findMovieByTitle (String title);
     List <MovieDto> findMoviesByYear (int year);
     List <MovieDto> findMoviesByGenre (String genre);
-    List<MovieDto> findMoviesByPrice (int price);
+    Optional<MovieDto> watchMovie (CustomerDto customerDto,MovieDto movieDto);
+
 
 }

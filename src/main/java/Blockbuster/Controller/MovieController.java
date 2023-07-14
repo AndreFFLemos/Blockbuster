@@ -54,8 +54,4 @@ public class MovieController implements MovieControllerInterface{
 
     }
 
-    @Override
-    public ResponseEntity<List<Rental>> findRentalByMovie(Movie movie) {
-        return null;
-    }
 }
