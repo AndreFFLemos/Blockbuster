@@ -73,7 +73,9 @@ class CustomerServiceTest {
 
         when(cr.findByPhone(anyInt())).thenReturn(Optional.of(customer)); // simulates the existence of the customer
         doNothing().when(cr).delete(customer); //when the delete method is invoked, do nothing because it returns a void
+
         cs.deleteCustomer(customerDto);
+
         verify(cr).delete(customer);
         verify(cr).findByPhone(anyInt());
 
@@ -83,10 +85,11 @@ class CustomerServiceTest {
     void findCustomerByIdTest() {
 
         when(cr.findById(anyInt())).thenReturn(of(customer));// it returns a container with a possible object
-        Optional<CustomerDto> mockedC= cs.findCustomerById(1);
+        Optional<CustomerDto> mockedC= cs.findCustomerById(0);
 
         assertTrue(mockedC.isPresent()); //checks if there is an instance
         assertEquals(Optional.of(customerDtoSaved),mockedC);
+
         verify(cr).findById(any());
 
     }
@@ -145,7 +148,7 @@ class CustomerServiceTest {
 
         //check when customer is present
         when(cr.findByEmail("a@L")).thenReturn(Optional.of(customer));
-        Optional<CustomerDto> mockedC= cs.findCustomerByEmail("a@a");
+        Optional<CustomerDto> mockedC= cs.findCustomerByEmail("a@L");
         assertEquals(Optional.of(customerDtoSaved),mockedC);
 
         //check when customer is not present
@@ -175,18 +178,24 @@ void findAll (){
 }
     @Test
     void updateCustomerTest() {
-        customer.setId(1);
-        customer.setFName("B");
-        customer.setLName("P");
+        Customer updatedCustomer= new Customer(1,"Ana","Lemos","AL",null,1234,"a@l");
 
-        when(cr.findById(1)).thenReturn(Optional.of(customer)); //guarantee that the method returns an existing customer
-        when(cr.save(customer)).thenReturn(customer);
+        //if the customer exists
+        when(cr.findByPhone(1234)).thenReturn(Optional.of(updatedCustomer)); //guarantee that the method returns an existing customer
+        when(cr.save(any(Customer.class))).thenReturn(updatedCustomer);
         Optional<CustomerDto> mockC= cs.updateCustomer(customerDto);
+        assertEquals("Ana",mockC.get().getfName());
+        assertEquals("Lemos",mockC.get().getlName());
 
-        assertEquals("B",mockC.get().getfName());
-        assertEquals("P",mockC.get().getlName());
+        //if the customer doesn't exist
+        when(cr.findByPhone(anyInt())).thenReturn(Optional.empty());
+        Optional<CustomerDto> nonExistingC= cs.updateCustomer(customerDto);
+        assertTrue(nonExistingC.isEmpty());
 
-        verify(cr).save(customer);
+
+        verify(cr).save(any(Customer.class));
+        verify(cr).deleteByPhone(customer.getPhone());
+        verify(cr,times(2)).findByPhone(anyInt());
     }
     @Test
     void validEmailAddress() {

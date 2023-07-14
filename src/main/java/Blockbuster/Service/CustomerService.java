@@ -75,12 +75,13 @@ public class CustomerService implements CustomerServiceInterface {
 
     public Optional<CustomerDto> updateCustomer(CustomerDto customerDto) {
         Optional<Customer> existingCustomer= cr.findByPhone(customerDto.getPhone());
-        //if it's not, then return an empty container
+
+        //if the customer isn't found, then return an empty container
         if (existingCustomer.isEmpty()){
             return Optional.empty();
         }
         //repository delete the customer
-        cr.deleteByPhone(customerDto.getPhone());
+        cr.deleteByPhone(existingCustomer.get().getPhone());
         //convert the customerDto instance into a customer instance and save it
         Customer customer= modelMapper.map(customerDto, Customer.class);
         customer=cr.save(customer);
