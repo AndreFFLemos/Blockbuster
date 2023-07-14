@@ -2,7 +2,6 @@ package Blockbuster.Controller;
 
 import Blockbuster.DTO.CustomerDto;
 import Blockbuster.Model.Customer;
-import Blockbuster.Model.Rental;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;

@@ -2,7 +2,6 @@ package Blockbuster.Controller;
 
 import Blockbuster.DTO.CustomerDto;
 import Blockbuster.Model.Customer;
-import Blockbuster.Model.Rental;
 import Blockbuster.Service.CustomerServiceInterface;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

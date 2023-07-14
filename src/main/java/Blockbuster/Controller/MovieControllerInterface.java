@@ -2,7 +2,6 @@ package Blockbuster.Controller;
 
 import Blockbuster.DTO.MovieDto;
 import Blockbuster.Model.Movie;
-import Blockbuster.Model.Rental;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;

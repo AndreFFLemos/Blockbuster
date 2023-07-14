@@ -2,10 +2,8 @@ package Blockbuster.Controller;
 
 import Blockbuster.DTO.MovieDto;
 import Blockbuster.Model.Movie;
-import Blockbuster.Model.Rental;
 import Blockbuster.Service.MovieServiceInterface;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
