@@ -71,18 +71,17 @@ class MovieServiceTest {
     @Test
     void findMovieByIdTest() {
         //when movie exists
-        movie.setId(1);
-        when(mr.findById(1)).thenReturn(Optional.of(movie));
-        Optional<MovieDto> mockedM= ms.findMovieById(1);
+        when(mr.findById(0)).thenReturn(Optional.of(movie));
+        Optional<MovieDto> mockedM= ms.findMovieById(0);
 
-        assertEquals(movieDtoSaved,mockedM);
+        assertEquals(Optional.of(movieDtoSaved),mockedM);
 
         //when movie doesn't exist
         when (mr.findById(5)).thenReturn(Optional.empty());
         Optional <MovieDto> movieNotFound= ms.findMovieById(5);
         assertTrue(movieNotFound.isEmpty());
 
-        verify(mr).findById(1);
+        verify(mr).findById(0);
         verify(mr).findById(5);
     }
 
@@ -128,7 +127,6 @@ class MovieServiceTest {
 
     @Test
     void findMovieByTitleTest (){
-        movie.setTitle("Rambo");
 
         //check when movie is present
         when(mr.findMovieByTitle("Rambo")).thenReturn(Optional.of(movie));
@@ -146,11 +144,9 @@ class MovieServiceTest {
 
     @Test
     void findMoviesByGenre(){
-        movie.setGenre("Action");
         Movie m2=new Movie();
-        m2.setGenre("Action");;
+        m2.setGenre("Action");
 
-        movies.add(movie);
         movies.add(m2);
 
         //check when movie is present
@@ -171,13 +167,6 @@ class MovieServiceTest {
     @Test
     void findMovieByYear(){
         movie.setReleaseYear(1988);
-        Movie m1=new Movie();
-        m1.setReleaseYear(1900);
-        Movie m2=new Movie();
-        m2.setReleaseYear(2000);
-
-        movies.add(m1);
-        movies.add(m2);
 
         //check when movie is present
         when(mr.findMoviesByYear(1988)).thenReturn(movies);
@@ -189,7 +178,7 @@ class MovieServiceTest {
         List<MovieDto> yearNotFound= ms.findMoviesByYear(1950);
         assertTrue(yearNotFound.isEmpty());
 
-        verify(mr).findMoviesByYear(1998);
+        verify(mr).findMoviesByYear(1988);
         verify(mr).findMoviesByYear(1950);
     }
 }
