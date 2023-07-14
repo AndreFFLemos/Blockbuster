@@ -3,12 +3,23 @@ package Blockbuster.DTO;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.Digits;
 
+import java.util.Objects;
+
 public class MovieDto {
     private String title;
     private String genre;
     private int releaseYear;
-    private float rating;
-    private int price;
+    private double rating;
+
+    public MovieDto(String title, String genre, int releaseYear, double rating) {
+        this.title = title;
+        this.genre = genre;
+        this.releaseYear = releaseYear;
+        this.rating = rating;
+    }
+
+    public MovieDto() {
+    }
 
     public String getTitle() {
         return title;
@@ -34,19 +45,30 @@ public class MovieDto {
         this.releaseYear = releaseYear;
     }
 
-    public float getRating() {
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(float rating) {
+    public void setRating(double rating) {
         this.rating = rating;
     }
 
-    public int getPrice() {
-        return price;
+    @Override
+    public boolean equals(Object o){
+        if (this==o){
+            return true;
+        }
+        if (o==null || getClass()!=o.getClass()) return false;
+        MovieDto movieDto= (MovieDto) o;
+        return Objects.equals(title,movieDto.title) &&
+                Objects.equals(genre, movieDto.genre) &&
+                Objects.equals(releaseYear,movieDto.releaseYear)&&
+                Objects.equals(rating,movieDto.rating);
     }
 
-    public void setPrice(int price) {
-        this.price = price;
+    @Override
+    public int hashCode(){
+        return Objects.hash(title,genre,releaseYear,rating);
     }
+
 }

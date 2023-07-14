@@ -31,18 +31,18 @@ public class MovieService implements MovieServiceInterface{
 
     public Optional<MovieDto> createMovie(MovieDto movieDto) {
         //if the movie is in the DB then the method will return an empty container meaning no saved movie
-        Optional <Movie> movie= mr.findMovieByTitle(movieDto.getTitle());
-        if (movie.isPresent()) {
+        Optional <Movie> existingMovie= mr.findMovieByTitle(movieDto.getTitle());
+        if (existingMovie.isPresent()) {
             return Optional.empty();
         }
 
         //convert the customerDto instance to a POJO instance and save the latter to the customer variable
-        Movie movie1= modelMapper.map(movieDto, Movie.class);
+        Movie movie= modelMapper.map(movieDto, Movie.class);
         //tell the repository to persist the customer instance and save that instance on the customer variable
-        movie1= mr.save(movie1);
+        movie= mr.save(movie);
 
         //convert that persisted instance back in to a DTO object
-        MovieDto movieDto1= modelMapper.map(movie1,MovieDto.class);
+        MovieDto movieDto1= modelMapper.map(movie,MovieDto.class);
 
         return  Optional.of(movieDto1);
     }
