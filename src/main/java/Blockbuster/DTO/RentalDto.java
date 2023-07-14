@@ -1,31 +1,45 @@
 package Blockbuster.DTO;
 
+import Blockbuster.Model.Customer;
+import Blockbuster.Model.Movie;
+
+import java.time.LocalDate;
+
 public class RentalDto {
-    private String title;
-    private int releaseYear;
-    private String genre;
+    private Movie movie;
+    private Customer customer;
+    private LocalDate rentalDate;
 
-    public String getTitle() {
-        return title;
+    public RentalDto(Movie movie, Customer customer, LocalDate rentalDate) {
+        this.movie = movie;
+        this.customer = customer;
+        this.rentalDate = rentalDate;
+    }
+    public RentalDto(){
+
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public Movie getMovie() {
+        return movie;
     }
 
-    public int getReleaseYear() {
-        return releaseYear;
+    public void setMovie(Movie movie) {
+        this.movie = movie;
     }
 
-    public void setReleaseYear(int releaseYear) {
-        this.releaseYear = releaseYear;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public String getGenre() {
-        return genre;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
-    public void setGenre(String genre) {
-        this.genre = genre;
+    public LocalDate getRentalDate() {
+        return rentalDate;
+    }
+
+    public void setRentalDate(LocalDate rentalDate) {
+        this.rentalDate = rentalDate;
     }
 }

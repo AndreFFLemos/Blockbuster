@@ -36,11 +36,15 @@ class CustomerServiceTest {
     List <Customer> customersFound;
     CustomerDto customerDtoSaved;
 
+
     @BeforeEach
     public void setup(){
-        customerDto=new CustomerDto("A","L","AL",1234,"a@l");
-        customer=new Customer(1,"A","L","AL","ola",1234,"a@l");
         modelMapper=new ModelMapper();
+        //I'm passing this modelmapper instance to the customer service instance so that the modelmapper is not null
+        //I'm using new because the model mapper is not a mock
+        cs = new CustomerService(cr, modelMapper);
+        customerDto=new CustomerDto("A","L","AL","a@l",1234);
+        customer=new Customer(0,"A","L","AL",null,1234,"a@l");
         customerDtoSaved = modelMapper.map(customer, CustomerDto.class);// convert the POJO persisted Customer to CustomerDto
         customersFound= new LinkedList<>();
         customersFound.add(customer);
@@ -49,26 +53,26 @@ class CustomerServiceTest {
     @Test
     void createCustomerTest() {
 
-            // test when customer doesn't exist
-            when(cr.findById(5)).thenReturn(Optional.empty());  // There's no customer with this number
-            when(cr.save(any(Customer.class))).thenReturn(customer);  // By saving any customer, return the predefined customer
+        // test when customer doesn't exist
+            when(cr.findByPhone(anyInt())).thenReturn(Optional.empty());  // There's no customer with this number
+            when(cr.save(customer)).thenReturn(customer); // By saving a customer, return the predefined customer
             Optional<CustomerDto> mockedC = cs.createCustomer(customerDto);
             assertEquals(Optional.of(customerDtoSaved), mockedC);  // Is the returned dto the same as the saved one?
 
             //test when customer already exists
-            when(cr.findById(1)).thenReturn(Optional.of(customer)); //When the customer already exists
+            when(cr.findByPhone(1234)).thenReturn(Optional.of(customer)); //When the customer already exists
             Optional<CustomerDto> existingC = cs.createCustomer(customerDto); //invoke the cr.findById and then returns empty as defined in the customerService
             assertTrue(existingC.isEmpty());
 
             verify(cr, times(1)).save(customer); //the number of times the cr.save method is really used.
-        }
+            verify(cr,times(2)).findByPhone(anyInt());//the number of times the cr.findByphone is used.
+    }
 
     @Test
     void deleteCustomerByIdTest() {
-        customer.setId(1);
 
-        when(cr.findById(1)).thenReturn(Optional.of(customer)); // simulates the existance of the customer
-        doNothing().when(cr).deleteById(1); //when the delete method is invoked, do nothing because it returns a void
+        when(cr.findById(0)).thenReturn(Optional.of(customer)); // simulates the existance of the customer
+        doNothing().when(cr).deleteById(0); //when the delete method is invoked, do nothing because it returns a void
        cs.deleteCustomer(customerDto);
         verify(cr).deleteById(1);
 
@@ -91,7 +95,7 @@ class CustomerServiceTest {
         //check when customer is present
         when(cr.findByFirstName("A")).thenReturn(customersFound); //when the repository method is invoked, return the list
         List <CustomerDto> mockedC= cs.findCustomerByFirstName("A"); //save the results of the search
-        assertEquals(mockedC.size(),1);
+        assertEquals(1,mockedC.size());
 
         //check when customer is not present
         when(cr.findByFirstName("T")).thenReturn(Collections.emptyList()); //when the name doesnt return customers, return empty container
@@ -108,7 +112,7 @@ class CustomerServiceTest {
         //check when customer is present
         when(cr.findByLastName("L")).thenReturn(customersFound);
         List <CustomerDto> mockedC= cs.findCustomerByLastName("L");
-        assertEquals(mockedC.size(),1);
+        assertEquals(1,mockedC.size());
 
         //check when customer is not present
         when(cr.findByLastName("T")).thenReturn(Collections.emptyList());
@@ -125,7 +129,7 @@ class CustomerServiceTest {
         //check when customer is present
         when(cr.findByPhone(1234)).thenReturn(Optional.of(customer));
         Optional<CustomerDto> mockedC= cs.findCustomerByPhone(1234);
-        assertEquals(mockedC,Optional.of(customerDtoSaved));
+        assertEquals(Optional.of(customerDtoSaved),mockedC);
 
         //check when customer is not present
         when(cr.findByPhone(1111)).thenReturn(Optional.empty());
@@ -141,7 +145,7 @@ class CustomerServiceTest {
         //check when customer is present
         when(cr.findByEmail("a@L")).thenReturn(Optional.of(customer));
         Optional<CustomerDto> mockedC= cs.findCustomerByEmail("a@a");
-        assertEquals(mockedC,Optional.of(customerDtoSaved));
+        assertEquals(Optional.of(customerDtoSaved),mockedC);
 
         //check when customer is not present
         when(cr.findByEmail("b@b")).thenReturn(Optional.empty());
@@ -165,7 +169,7 @@ void findAll (){
     when (cr.findAll()).thenReturn(customersFound);
     List<CustomerDto> mockCustomers= cs.findAll();
 
-    assertEquals(mockCustomers.size(),4);
+    assertEquals(4,mockCustomers.size());
     verify(cr).findAll();
 }
     @Test
@@ -178,8 +182,8 @@ void findAll (){
         when(cr.save(customer)).thenReturn(customer);
         Optional<CustomerDto> mockC= cs.updateCustomer(customerDto);
 
-        assertEquals("B",mockC.get().getFirstN());
-        assertEquals("P",mockC.get().getLastN());
+        assertEquals("B",mockC.get().getfName());
+        assertEquals("P",mockC.get().getlName());
 
         verify(cr).save(customer);
     }

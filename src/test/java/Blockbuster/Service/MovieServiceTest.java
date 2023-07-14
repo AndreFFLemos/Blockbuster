@@ -52,13 +52,14 @@ class MovieServiceTest {
         when(mr.save(any(Movie.class))).thenReturn(movie);
         Optional<MovieDto> mockedMovie= ms.createMovie(movieDto);
 
-        assertEquals(mockedMovie,movieDtoSaved);
+        assertEquals(movieDtoSaved,mockedMovie);
 
         //when movie exists
         movie.setId(1);
         when (mr.findById(1)).thenReturn(Optional.of(movie));
         Optional <MovieDto> existingMovie= ms.createMovie(movieDto);
         assertTrue(existingMovie.isEmpty());
+
         verify(mr,times(1)).save(movie);
     }
 
@@ -69,7 +70,7 @@ class MovieServiceTest {
         when(mr.findById(1)).thenReturn(Optional.of(movie));
         Optional<MovieDto> mockedM= ms.findMovieById(1);
 
-        assertEquals(mockedM,movieDtoSaved);
+        assertEquals(movieDtoSaved,mockedM);
 
         //when movie doesn't exist
         when (mr.findById(5)).thenReturn(Optional.empty());
@@ -106,7 +107,7 @@ class MovieServiceTest {
 
         Optional<MovieDto> mockedM= ms.updateMovie(movieDto);
 
-        assertEquals(mockedM.get().getTitle(),"Rambo");
+        assertEquals("Rambo",mockedM.get().getTitle());
         verify(mr).save(movie);
     }
 
@@ -127,7 +128,7 @@ class MovieServiceTest {
         //check when movie is present
         when(mr.findMovieByTitle("Rambo")).thenReturn(Optional.of(movie));
         Optional<MovieDto> mockedM= ms.findMovieByTitle("Rambo");
-        assertTrue(mockedM.get().getTitle()=="Rambo");
+        assertEquals("Rambo",mockedM.get().getTitle());
 
         //check when movie is not present
         when(mr.findMovieByTitle("Matrix")).thenReturn(Optional.empty());
@@ -151,7 +152,7 @@ class MovieServiceTest {
         when(mr.findMoviesByGenre("Action")).thenReturn(movies);
         List<MovieDto> genreFound= ms.findMoviesByGenre("Action");
 
-        assertEquals(genreFound.size(),2);
+        assertEquals(2,genreFound.size());
 
         //check when movie is not present
         when(mr.findMoviesByGenre("Drama")).thenReturn(Collections.emptyList());
@@ -174,9 +175,9 @@ class MovieServiceTest {
         movies.add(m2);
 
         //check when movie is present
-        when(mr.findMoviesByYear(1998)).thenReturn(movies);
-        List<MovieDto> yearFound= ms.findMoviesByYear(1998);
-        assertEquals(yearFound.size(),1);
+        when(mr.findMoviesByYear(1988)).thenReturn(movies);
+        List<MovieDto> yearFound= ms.findMoviesByYear(1988);
+        assertEquals(1,yearFound.size());
 
         //check when movie is not present
         when(mr.findMoviesByYear(1950)).thenReturn(Collections.emptyList());
@@ -197,7 +198,7 @@ class MovieServiceTest {
         //check when movie is present
         when(mr.findMoviesByPrice(2)).thenReturn(movies);
         List<MovieDto> movieFoundByPrice= ms.findMoviesByPrice(2);
-        assertEquals(movieFoundByPrice.size(),2);
+        assertEquals(2,movieFoundByPrice.size());
 
         //check when movie is not present
         when(mr.findMoviesByPrice(4)).thenReturn(Collections.emptyList());

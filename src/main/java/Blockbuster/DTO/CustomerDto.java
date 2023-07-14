@@ -2,38 +2,41 @@ package Blockbuster.DTO;
 
 import Blockbuster.Model.Customer;
 
+import java.util.Objects;
+
 public class CustomerDto {
-    private String firstN;
-    private String lastN;
+    private String fName;
+    private String lName;
     private String username;
     private String email;
     private int phone;
 
-    public CustomerDto(String firstN, String lastN, String username,int phone, String email) {
-        this.firstN = firstN;
-        this.lastN = lastN;
+    public CustomerDto(String fName, String lName, String username, String email, int phone) {
+        this.fName = fName;
+        this.lName = lName;
         this.username = username;
-        this.phone = phone;
         this.email = email;
+        this.phone = phone;
     }
+
     public CustomerDto(){
 
     }
 
-    public String getFirstN() {
-        return firstN;
+    public String getfName() {
+        return fName;
     }
 
-    public void setFirstN(String firstN) {
-        this.firstN = firstN;
+    public void setfName(String fName) {
+        this.fName = fName;
     }
 
-    public String getLastN() {
-        return lastN;
+    public String getlName() {
+        return lName;
     }
 
-    public void setLastN(String lastN) {
-        this.lastN = lastN;
+    public void setlName(String lName) {
+        this.lName = lName;
     }
 
     public String getUsername() {
@@ -59,4 +62,22 @@ public class CustomerDto {
     public void setPhone(int phone) {
         this.phone = phone;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CustomerDto that = (CustomerDto) o;
+        return Objects.equals(fName, that.fName) &&
+                Objects.equals(lName,that.lName) &&
+                Objects.equals(username,that.username)&&
+                Objects.equals(phone, that.phone) &&
+                Objects.equals(email, that.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fName,lName,username, phone, email);
+    }
+
 }

@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 @Transactional
 public class CustomerService implements CustomerServiceInterface {
 
-    CustomerRepository cr;
-    ModelMapper modelMapper;
+    private CustomerRepository cr;
+    private ModelMapper modelMapper;
 
     @Autowired
     public CustomerService(CustomerRepository cr, ModelMapper modelMapper) {
@@ -26,15 +26,21 @@ public class CustomerService implements CustomerServiceInterface {
 
     public Optional<CustomerDto> createCustomer(CustomerDto customerDto) {
         //if the customer is in the DB then the method will return an empty container meaning no saved Customer
-        Optional <Customer> customerExists= cr.findById(customerDto.getPhone());
+        Optional <Customer> customerExists= cr.findByPhone(customerDto.getPhone());
 
         //it's cheaper in terms of resources to return an optional  than an throwing an exception for something that can be normal
         if (customerExists.isPresent()) {
             return Optional.empty();
         }
 
+        if (customerDto == null) {
+            throw new IllegalArgumentException("customerDto is null");
+        }
         //convert the customerDto instance to a POJO instance and save the latter to the customer variable
         Customer customer= modelMapper.map(customerDto, Customer.class);
+        if (customer == null) {
+            throw new IllegalStateException("Mapping resulted in null Customer");
+        }
         //tell the repository to persist the customer instance and save that instance on the customer variable
         customer= cr.save(customer);
 
@@ -46,7 +52,7 @@ public class CustomerService implements CustomerServiceInterface {
 
     public void deleteCustomer(CustomerDto customerDto) {
 
-        Optional <Customer> customerExists= cr.findById(customerDto.getPhone());
+        Optional <Customer> customerExists= cr.findByPhone(1234);
         if (!customerExists.isPresent()) {
             System.out.println("No customer with that phone present");
         }

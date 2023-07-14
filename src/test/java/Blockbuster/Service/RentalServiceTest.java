@@ -1,5 +1,6 @@
 package Blockbuster.Service;
 
+import Blockbuster.DTO.RentalDto;
 import Blockbuster.Model.Customer;
 import Blockbuster.Model.Movie;
 import Blockbuster.Model.Rental;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.ComponentScan;
 
 import java.time.LocalDate;
@@ -29,6 +31,10 @@ class RentalServiceTest {
     private Customer customer;
     private Movie movie;
     private LocalDate rentalDate;
+    ModelMapper modelMapper;
+    List<Rental> rentals;
+    RentalDto rentalDto;
+    RentalDto rentalDtoSaved;
 
     @Mock
     private RentalRepository rr;
@@ -45,47 +51,51 @@ class RentalServiceTest {
         rental.setCustomer(customer);
         rental.setMovie(movie);
         rental.setRentalDate(rentalDate);
+        rentals=new LinkedList<>();
+        rentals.add(rental);
+
+        rentalDto=new RentalDto();
+        modelMapper=new ModelMapper();
+        rentalDtoSaved= modelMapper.map(rental,RentalDto.class);
     }
     @Test
     void createRentalTest() {
 
         when(rr.save(rental)).thenReturn(rental);
-        Rental mockedR= rs.createRental(rental);
+        Optional<RentalDto> mockedR= rs.createRental(rentalDto);
 
-        assertEquals(mockedR,rental);
-        verify(rr).save(any(Rental.class));
+        assertEquals(mockedR,rentalDtoSaved);
+        verify(rr).save(rental);
     }
 
     @Test
     void deleteRentalByIdTest() {
-        rental.setId(1);
-        when(rr.findById(anyInt())).thenReturn(Optional.of(rental));
-        doNothing().when(rr).deleteById(anyInt());
+        when(rr.findById(1)).thenReturn(Optional.of(rental));
+        doNothing().when(rr).deleteById(1);
 
-        rs.deleteRentalById(1);
-        verify(rr).deleteById(anyInt());
+        rs.deleteRental(rentalDto);
+        verify(rr).deleteById(1);
     }
 
     @Test
     void findRentalByIdTest() {
 
         when(rr.findById(1)).thenReturn(Optional.of(rental));
+        Optional<RentalDto> mockedR= rs.findRentalById(1);
 
-        Rental mockedR= rs.findRentalById(1);
-        assertEquals(mockedR,rental);
+        assertEquals(mockedR,rentalDtoSaved);
 
-        verify(rr).findById(anyInt());
+        verify(rr).findById(1);
     }
 
     @Test
     void findAllRentalsTest(){
         Rental r1=new Rental();
-        List<Rental> rentals= new LinkedList<>();
         rentals.add(rental);
         rentals.add(r1);
 
         when(rr.findAll()).thenReturn(rentals);
-        List<Rental> mockedR= rs.findAll();
+        List<RentalDto> mockedR= rs.findAll();
 
         assertEquals(2,mockedR.size());
         verify(rr).findAll();
