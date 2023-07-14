@@ -69,12 +69,13 @@ class CustomerServiceTest {
     }
 
     @Test
-    void deleteCustomerByIdTest() {
+    void deleteCustomerTest() {
 
-        when(cr.findById(0)).thenReturn(Optional.of(customer)); // simulates the existance of the customer
-        doNothing().when(cr).deleteById(0); //when the delete method is invoked, do nothing because it returns a void
-       cs.deleteCustomer(customerDto);
-        verify(cr).deleteById(1);
+        when(cr.findByPhone(anyInt())).thenReturn(Optional.of(customer)); // simulates the existence of the customer
+        doNothing().when(cr).delete(customer); //when the delete method is invoked, do nothing because it returns a void
+        cs.deleteCustomer(customerDto);
+        verify(cr).delete(customer);
+        verify(cr).findByPhone(anyInt());
 
     }
 

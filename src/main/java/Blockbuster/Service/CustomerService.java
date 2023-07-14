@@ -52,12 +52,12 @@ public class CustomerService implements CustomerServiceInterface {
 
     public void deleteCustomer(CustomerDto customerDto) {
 
-        Optional <Customer> customerExists= cr.findByPhone(1234);
+        Optional <Customer> customerExists= cr.findByPhone(customerDto.getPhone());
         if (!customerExists.isPresent()) {
             System.out.println("No customer with that phone present");
         }
         Customer customer= modelMapper.map(customerDto, Customer.class);
-        cr.deleteById(customer.getId());
+        cr.delete(customer);
     }
 
     public Optional<CustomerDto> findCustomerById(int id) {
