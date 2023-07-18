@@ -60,14 +60,14 @@ class MovieServiceTest {
         //test when movie doesn't exist in the DB
         when (movieRepository.findMovieByTitle("ET")).thenReturn(Optional.empty());
         when(movieRepository.save(any(Movie.class))).thenReturn(newMovie);
-        Optional<MovieDto> mockedMovie= ms.createMovie(newMovieDto);
+        MovieDto mockedMovie= ms.createMovie(newMovieDto);
 
-        assertEquals(Optional.of(newMovieDto),mockedMovie);
+        assertEquals(newMovieDto,mockedMovie);
 
         //when movie exists
         when (movieRepository.findMovieByTitle("Rambo")).thenReturn(Optional.of(movie));
-        Optional <MovieDto> existingMovie= ms.createMovie(movieDto);
-        assertTrue(existingMovie.isEmpty());
+        MovieDto existingMovie= ms.createMovie(movieDto);
+        assertNull(existingMovie);
 
         verify(movieRepository).save(newMovie);
         verify(movieRepository).findMovieByTitle("ET");
@@ -78,14 +78,14 @@ class MovieServiceTest {
     void findMovieByIdTest() {
         //when movie exists
         when(movieRepository.findById(0)).thenReturn(Optional.of(movie));
-        Optional<MovieDto> mockedM= ms.findMovieById(0);
+        MovieDto mockedM= ms.findMovieById(0);
 
-        assertEquals(Optional.of(movieDtoSaved),mockedM);
+        assertEquals(movieDtoSaved,mockedM);
 
         //when movie doesn't exist
         when (movieRepository.findById(5)).thenReturn(Optional.empty());
-        Optional <MovieDto> movieNotFound= ms.findMovieById(5);
-        assertTrue(movieNotFound.isEmpty());
+        MovieDto movieNotFound= ms.findMovieById(5);
+        assertNull(movieNotFound);
 
         verify(movieRepository).findById(0);
         verify(movieRepository).findById(5);
@@ -114,12 +114,14 @@ class MovieServiceTest {
         //when the movie exists
         when(movieRepository.findMovieByTitle("Matrix")).thenReturn(Optional.of(updatedMovie)); //when findById gets used then it returns
         when(movieRepository.save(updatedMovie)).thenReturn(updatedMovie); //when a movie is saved by the repo then return that movie
-        Optional<MovieDto> mockedM= ms.updateMovie(updatedMovieDto);
-        assertEquals("Matrix",mockedM.get().getTitle());
+        MovieDto mockedM= ms.updateMovie(updatedMovieDto);
+        assertEquals("Matrix",mockedM.getTitle());
 
         //when the movie doesn't exist
         when (movieRepository.findMovieByTitle("ET")).thenReturn(Optional.empty());
-        ms.updateMovie(new MovieDto("ET","adventure",1980,8.0));
+        MovieDto nonExistingMovie=ms.updateMovie(new MovieDto("ET","adventure",1980,8.0));
+
+        assertNull(nonExistingMovie);
 
         verify(movieRepository).save(updatedMovie);
         verify(movieRepository).deleteByTitle("Matrix");
@@ -142,13 +144,13 @@ class MovieServiceTest {
 
         //check when movie is present
         when(movieRepository.findMovieByTitle("Rambo")).thenReturn(Optional.of(movie));
-        Optional<MovieDto> mockedM= ms.findMovieByTitle("Rambo");
-        assertEquals("Rambo",mockedM.get().getTitle());
+        MovieDto mockedM= ms.findMovieByTitle("Rambo");
+        assertEquals("Rambo",mockedM.getTitle());
 
         //check when movie is not present
         when(movieRepository.findMovieByTitle("Matrix")).thenReturn(Optional.empty());
-        Optional<MovieDto> movieNotFound= ms.findMovieByTitle("Matrix");
-        assertTrue(movieNotFound.isEmpty());
+        MovieDto movieNotFound= ms.findMovieByTitle("Matrix");
+        assertNull(movieNotFound);
 
         verify(movieRepository).findMovieByTitle("Rambo");
         verify(movieRepository).findMovieByTitle("Matrix");
@@ -199,14 +201,14 @@ class MovieServiceTest {
         //if movie exists
         when(movieRepository.findMovieByTitle("Rambo")).thenReturn(Optional.of(movie));
         when(customerRepository.findByPhone(1234)).thenReturn(Optional.of(customer));
-        Optional <MovieDto> watchedMovie= ms.watchMovie(customerDto,movieDto);
-        assertEquals(Optional.of(movieDto),watchedMovie);
+        MovieDto watchedMovie= ms.watchMovie(customerDto,movieDto);
+        assertEquals(movieDto,watchedMovie);
 
         //if movie doesn't exist
         movieDto.setTitle("ET");
         when(movieRepository.findMovieByTitle("ET")).thenReturn(Optional.empty());
-        Optional <MovieDto> nonExistentMovie= ms.watchMovie(customerDto,movieDto);
-        assertTrue(nonExistentMovie.isEmpty());
+        MovieDto nonExistentMovie= ms.watchMovie(customerDto,movieDto);
+        assertNull(nonExistentMovie);
 
         verify(customerRepository,times(2)).findByPhone(1234);
         verify(movieRepository).findMovieByTitle("Rambo");

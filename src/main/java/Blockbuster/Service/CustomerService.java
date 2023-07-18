@@ -24,13 +24,13 @@ public class CustomerService implements CustomerServiceInterface {
         this.modelMapper = modelMapper;
     }
 
-    public Optional<CustomerDto> createCustomer(CustomerDto customerDto) {
+    public CustomerDto createCustomer(CustomerDto customerDto) {
         //if the customer is in the DB then the method will return an empty container meaning no saved Customer
         Optional <Customer> customerExists= cr.findByPhone(customerDto.getPhone());
 
         //it's cheaper in terms of resources to return an optional  than an throwing an exception for something that can be normal
         if (customerExists.isPresent()) {
-            return Optional.empty();
+            return null;
         }
 
         if (customerDto == null) {
@@ -47,7 +47,7 @@ public class CustomerService implements CustomerServiceInterface {
         //convert that persisted instance back in to a DTO object
         CustomerDto customerDto1= modelMapper.map(customer,CustomerDto.class);
 
-        return  Optional.of(customerDto1);
+        return  customerDto1;
     }
 
     public void deleteCustomer(CustomerDto customerDto) {
@@ -60,25 +60,25 @@ public class CustomerService implements CustomerServiceInterface {
         cr.delete(customer);
     }
 
-    public Optional<CustomerDto> findCustomerById(int id) {
+    public CustomerDto findCustomerById(int id) {
         //if the customer is in the DB
         Optional<Customer> findCustomer=cr.findById(id);
         //if it's not, then return an empty container
         if (findCustomer.isEmpty()){
-            return Optional.empty();
+            return null;
         }
         //convert that found customer in to a customerDto instance and return it
         CustomerDto customerDto= modelMapper.map(findCustomer, CustomerDto.class);
 
-        return Optional.of(customerDto);
+        return customerDto;
     }
 
-    public Optional<CustomerDto> updateCustomer(CustomerDto customerDto) {
+    public CustomerDto updateCustomer(CustomerDto customerDto) {
         Optional<Customer> existingCustomer= cr.findByPhone(customerDto.getPhone());
 
-        //if the customer isn't found, then return an empty container
+        //if the customer isn't found, then return nothing
         if (existingCustomer.isEmpty()){
-            return Optional.empty();
+            return null;
         }
         //repository delete the customer
         cr.deleteByPhone(existingCustomer.get().getPhone());
@@ -89,71 +89,74 @@ public class CustomerService implements CustomerServiceInterface {
         //convert back that persisted customer in to a customerDto and return it
         CustomerDto customerDto1= modelMapper.map(customer, CustomerDto.class);
 
-        return Optional.of(customerDto1);
+        return customerDto1;
     }
 
     @Override
-    public List<CustomerDto> findAll() {
+    public List <CustomerDto> findAll() {
         List <Customer> customers= cr.findAll();
 
         //convert that list of customers in to a List of CustomersDto and return it
            return customers.stream()
-                    .map(customer -> modelMapper.map(customers, CustomerDto.class))
+                    .map(customer -> modelMapper.map(customer, CustomerDto.class))
                     .collect(Collectors.toList());
-
     }
 
     @Override
     public List <CustomerDto> findCustomerByFirstName(String firstName) {
 
-        List<Customer> customers= cr.findByFirstName(firstName);
+        Optional<List<Customer>> customers= cr.findByFirstName(firstName);
         if (customers.isEmpty())
         {
             return Collections.emptyList(); // if the name doesn't return customers, the repo returns an empty container
         }
 
-        return customers.stream()
-                .map(customer -> modelMapper.map(customers, CustomerDto.class))
+        List<Customer> getCustomersOut= customers.get();
+
+        return getCustomersOut.stream()
+                .map(customer -> modelMapper.map(customer, CustomerDto.class))
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<CustomerDto> findCustomerByLastName(String lastName) {
 
-        List<Customer> customers= cr.findByLastName(lastName);
+        Optional<List<Customer>> customers= cr.findByLastName(lastName);
 
         if (customers.isEmpty())
         {
             return Collections.emptyList(); // if the name doesn't return customers, the repo returns an empty object
         }
 
-        return customers.stream()
-                .map(customer -> modelMapper.map(customers, CustomerDto.class))
+        List<Customer> getCustomersOut= customers.get();
+
+        return getCustomersOut.stream()
+                .map(customer -> modelMapper.map(customer, CustomerDto.class))
                 .collect(Collectors.toList());
 
     }
 
     @Override
-    public Optional<CustomerDto> findCustomerByPhone(int phone) {
+    public CustomerDto findCustomerByPhone(int phone) {
         Optional <Customer> foundCustomer= cr.findByPhone(phone);
 
         if (foundCustomer.isEmpty()) {
-            return Optional.empty();
+            return null;
         }
         CustomerDto customerDto=modelMapper.map(foundCustomer, CustomerDto.class);
 
-        return Optional.of(customerDto);
+        return customerDto;
     }
 
     @Override
-    public Optional<CustomerDto> findCustomerByEmail(String email) {
+    public CustomerDto findCustomerByEmail(String email) {
         Optional <Customer> foundCustomer= cr.findByEmail(email);
 
         if (foundCustomer.isEmpty()) {
-            return Optional.empty();
+            return null;
         }
         CustomerDto customerDto=modelMapper.map(foundCustomer, CustomerDto.class);
 
-        return Optional.of(customerDto);
+        return customerDto;
     }
 }

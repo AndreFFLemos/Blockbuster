@@ -8,13 +8,13 @@ import java.util.Optional;
 
 public interface CustomerServiceInterface {
 
-    Optional<CustomerDto> createCustomer(CustomerDto customerDto);
+    CustomerDto createCustomer(CustomerDto customerDto);
     void deleteCustomer(CustomerDto customerDto);
-    Optional<CustomerDto> findCustomerById(int id);
-    Optional<CustomerDto> updateCustomer(CustomerDto customerDto);
-    List<CustomerDto> findAll();
-    List<CustomerDto> findCustomerByFirstName(String name);
-    List<CustomerDto> findCustomerByLastName(String l);
-    Optional <CustomerDto> findCustomerByPhone(int i);
-    Optional<CustomerDto> findCustomerByEmail(String email);
+    CustomerDto findCustomerById(int id);
+    CustomerDto updateCustomer(CustomerDto customerDto);
+    List <CustomerDto> findAll();
+    List <CustomerDto> findCustomerByFirstName(String name);
+    List <CustomerDto> findCustomerByLastName(String l);
+    CustomerDto findCustomerByPhone(int i);
+    CustomerDto findCustomerByEmail(String email);
 }

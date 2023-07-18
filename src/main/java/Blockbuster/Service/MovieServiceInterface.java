@@ -9,14 +9,14 @@ import java.util.Optional;
 
 public interface MovieServiceInterface {
 
-    Optional<MovieDto> createMovie(MovieDto movieDto);
-    Optional <MovieDto> findMovieById(int id);
-    Optional<MovieDto> updateMovie(MovieDto movieDto);
+    MovieDto createMovie(MovieDto movieDto);
+    MovieDto findMovieById(int id);
+    MovieDto updateMovie(MovieDto movieDto);
     void deleteMovieById(int id);
-    Optional<MovieDto> findMovieByTitle (String title);
-    List <MovieDto> findMoviesByYear (int year);
-    List <MovieDto> findMoviesByGenre (String genre);
-    Optional<MovieDto> watchMovie (CustomerDto customerDto,MovieDto movieDto);
+    MovieDto findMovieByTitle (String title);
+    List<MovieDto> findMoviesByYear (int year);
+    List<MovieDto> findMoviesByGenre (String genre);
+    MovieDto watchMovie (CustomerDto customerDto,MovieDto movieDto);
 
 
 }

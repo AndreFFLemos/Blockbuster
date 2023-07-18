@@ -31,11 +31,11 @@ public class MovieService implements MovieServiceInterface{
         this.modelMapper = modelMapper;
     }
 
-    public Optional<MovieDto> createMovie(MovieDto movieDto) {
+    public MovieDto createMovie(MovieDto movieDto) {
         //if the movie is in the DB then the method will return an empty container meaning no saved movie
         Optional <Movie> existingMovie= movieRepository.findMovieByTitle(movieDto.getTitle());
         if (existingMovie.isPresent()) {
-            return Optional.empty();
+            return null;
         }
 
         //convert the customerDto instance to a POJO instance and save the latter to the customer variable
@@ -46,17 +46,17 @@ public class MovieService implements MovieServiceInterface{
         //convert that persisted instance back in to a DTO object
         MovieDto movieDto1= modelMapper.map(movie,MovieDto.class);
 
-        return  Optional.of(movieDto1);
+        return  movieDto1;
     }
 
-    public Optional<MovieDto> findMovieById(int id) {
+    public MovieDto findMovieById(int id) {
         Optional <Movie> movie= movieRepository.findById(id);
 
         if (movie.isEmpty()){
-            return Optional.empty();
+            return null;
         }
         MovieDto movieDto= modelMapper.map(movie,MovieDto.class);
-        return Optional.of(movieDto);
+        return movieDto;
     }
 
     public List<MovieDto> findAllMovies(){
@@ -67,11 +67,11 @@ public class MovieService implements MovieServiceInterface{
                 .collect(Collectors.toList());
     }
 
-    public Optional<MovieDto> updateMovie(MovieDto movieDto) {
+    public MovieDto updateMovie(MovieDto movieDto) {
            Optional <Movie> existingMovie= movieRepository.findMovieByTitle(movieDto.getTitle());
 
            if (existingMovie.isEmpty()){
-               return Optional.empty();
+               return null;
            }
 
            //because the movie exists in the DB, repo delete it
@@ -82,7 +82,7 @@ public class MovieService implements MovieServiceInterface{
             //convert that persisted movie to movie Dto and return it
             MovieDto movieDto1=modelMapper.map(movie,MovieDto.class);
 
-            return Optional.of(movieDto1);
+            return movieDto1;
     }
 
     public void deleteMovieById(int id) {
@@ -95,15 +95,15 @@ public class MovieService implements MovieServiceInterface{
     }
 
     @Override
-    public Optional<MovieDto> findMovieByTitle(String title) {
+    public MovieDto findMovieByTitle(String title) {
         Optional <Movie> movie= movieRepository.findMovieByTitle(title);
         if (movie.isEmpty()) {
-            return Optional.empty();
+            return null;
         }
 
         MovieDto movieDto= modelMapper.map(movie,MovieDto.class);
 
-        return Optional.of(movieDto);
+        return movieDto;
 
     }
 
@@ -131,7 +131,7 @@ public class MovieService implements MovieServiceInterface{
                 .collect(Collectors.toList());    }
 
     @Override
-    public Optional<MovieDto> watchMovie(CustomerDto customerDto, MovieDto movieDto) {
+    public MovieDto watchMovie(CustomerDto customerDto, MovieDto movieDto) {
 
             Optional<Movie> existingMovie = movieRepository.findMovieByTitle(movieDto.getTitle());
             Optional<Customer> existingCustomer = customerRepository.findByPhone(customerDto.getPhone());
@@ -152,9 +152,9 @@ public class MovieService implements MovieServiceInterface{
                 customerRepository.save(customer);
 
                 MovieDto movieToMovieDto= modelMapper.map(movie, MovieDto.class);
-                return Optional.of(movieToMovieDto);
+                return movieToMovieDto;
             } else {
-                return Optional.empty();
+                return null;
             }
     }
 
