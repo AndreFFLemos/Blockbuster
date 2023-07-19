@@ -42,8 +42,8 @@ class MovieServiceTest {
     void setup (){
         modelMapper=new ModelMapper();
         ms= new MovieService(movieRepository,customerRepository,modelMapper);
-        movie= new Movie(0,"Rambo","Action",1982,7.5);
-        movieDto=new MovieDto("Rambo","Action",1982,7.5);
+        movie= new Movie(0,"Rambo","Action",1982,7);
+        movieDto=new MovieDto("Rambo","Action",1982,7);
         movies= new LinkedList<>();
         movies.add(movie);
         movieDtoSaved= modelMapper.map(movie, MovieDto.class);
@@ -54,8 +54,8 @@ class MovieServiceTest {
     @Test
     void createMovieTest() {
 
-        Movie newMovie= new Movie(0,"ET","Adventure",1980,8.5);
-        MovieDto newMovieDto= new MovieDto("ET","Adventure",1980,8.5);
+        Movie newMovie= new Movie(0,"ET","Adventure",1980,8);
+        MovieDto newMovieDto= new MovieDto("ET","Adventure",1980,8);
 
         //test when movie doesn't exist in the DB
         when (movieRepository.findMovieByTitle("ET")).thenReturn(Optional.empty());
@@ -108,8 +108,8 @@ class MovieServiceTest {
 
     @Test
     void updateMovieTest() {
-        Movie updatedMovie= new Movie(0,"Matrix","Action",1999,8.0);
-        MovieDto updatedMovieDto= new MovieDto("Matrix","Action",1999,8.0);
+        Movie updatedMovie= new Movie(0,"Matrix","Action",1999,8);
+        MovieDto updatedMovieDto= new MovieDto("Matrix","Action",1999,8);
 
         //when the movie exists
         when(movieRepository.findMovieByTitle("Matrix")).thenReturn(Optional.of(updatedMovie)); //when findById gets used then it returns
@@ -119,7 +119,7 @@ class MovieServiceTest {
 
         //when the movie doesn't exist
         when (movieRepository.findMovieByTitle("ET")).thenReturn(Optional.empty());
-        MovieDto nonExistingMovie=ms.updateMovie(new MovieDto("ET","adventure",1980,8.0));
+        MovieDto nonExistingMovie=ms.updateMovie(new MovieDto("ET","adventure",1980,8));
 
         assertNull(nonExistingMovie);
 

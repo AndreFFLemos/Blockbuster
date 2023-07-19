@@ -18,6 +18,6 @@ public interface MovieControllerInterface {
     ResponseEntity<List<MovieDto>> findMoviesByReleaseYear(@RequestParam ("year") int year);
     ResponseEntity<List<MovieDto>> findMoviesByGenre(@RequestParam ("genre") String genre);
     ResponseEntity<MovieDto>  updateMovie(@PathVariable int id,@RequestBody MovieDto movieDto);
-    void deleteMovie(@PathVariable int id, @RequestBody MovieDto movieDto);
+    ResponseEntity <Void> deleteMovie(@PathVariable int id);
 
 }

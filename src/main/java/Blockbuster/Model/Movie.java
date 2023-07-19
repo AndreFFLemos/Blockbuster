@@ -25,12 +25,12 @@ public class Movie {
     @Column(name="releaseyear")
     private int releaseYear;
     @Column (name="rating")
-    private double rating;
+    private float rating;
     //the mappedBy attribute indicates that the relationship is managed by the customer side
     @ManyToMany(mappedBy = "watchedMovies")
     private List<Customer> viewers= new ArrayList<>();
 
-    public Movie(int id, String title, String genre, int releaseYear, double rating) {
+    public Movie(int id, String title, String genre, int releaseYear, float rating) {
         this.id = id;
         this.title = title;
         this.genre = genre;

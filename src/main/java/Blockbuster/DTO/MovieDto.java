@@ -9,9 +9,9 @@ public class MovieDto {
     private String title;
     private String genre;
     private int releaseYear;
-    private double rating;
+    private float rating;
 
-    public MovieDto(String title, String genre, int releaseYear, double rating) {
+    public MovieDto(String title, String genre, int releaseYear, float rating) {
         this.title = title;
         this.genre = genre;
         this.releaseYear = releaseYear;
@@ -45,11 +45,11 @@ public class MovieDto {
         this.releaseYear = releaseYear;
     }
 
-    public double getRating() {
+    public float getRating() {
         return rating;
     }
 
-    public void setRating(double rating) {
+    public void setRating(float rating) {
         this.rating = rating;
     }
 

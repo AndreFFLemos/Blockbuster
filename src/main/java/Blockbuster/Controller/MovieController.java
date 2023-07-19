@@ -57,9 +57,11 @@ public class MovieController implements MovieControllerInterface{
 
     @Override
     @DeleteMapping(value = "/{id}")
-    public void deleteMovie(@PathVariable int id,@RequestBody MovieDto movieDto) {
+    public ResponseEntity<Void> deleteMovie(@PathVariable int id) {
 
         movieServiceInterface.deleteMovieById(id);
+
+        return ResponseEntity.ok().build();
     }
 
 }

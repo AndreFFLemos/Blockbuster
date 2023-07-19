@@ -2,9 +2,7 @@ package Blockbuster.Controller;
 
 import Blockbuster.DTO.CustomerDto;
 import Blockbuster.Model.Customer;
-import Blockbuster.Service.CustomerService;
 import Blockbuster.Service.CustomerServiceInterface;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,10 +10,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -25,7 +21,6 @@ import java.util.List;
 
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 
 @WebMvcTest
 public class CustomerControllerTest {
@@ -33,15 +28,13 @@ public class CustomerControllerTest {
     @Autowired
     private MockMvc mockMvc; // it simulates the request
     @Mock
-    private CustomerServiceInterface customerServiceInterface;
+    private CustomerServiceInterface customerService;
     @InjectMocks
     private CustomerController customerController;
-
     private Customer customer;
     private CustomerDto customerDto;
     private List<CustomerDto> customerDtos;
-
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     public void setup(){
@@ -66,7 +59,7 @@ public class CustomerControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody);
 
-        when(customerServiceInterface.createCustomer(customerDto)).thenReturn(customerDto);
+        when(customerService.createCustomer(customerDto)).thenReturn(customerDto);
         mockMvc.perform(requestBuilder)
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
@@ -82,7 +75,7 @@ public class CustomerControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody);
 
-        when(customerServiceInterface.updateCustomer(customerDto)).thenReturn(customerDto);
+        when(customerService.updateCustomer(customerDto)).thenReturn(customerDto);
 
         mockMvc.perform(requestBuilder)
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -97,7 +90,7 @@ public class CustomerControllerTest {
                 .content(requestBody);
 
         //because the method deleteCustomer returns a void, then we tell mockito to do nothing when the method is invoked
-        doNothing().when(customerServiceInterface).deleteCustomer(customerDto);
+        doNothing().when(customerService).deleteCustomer(customerDto);
 
         mockMvc.perform(requestBuilder)
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -108,11 +101,11 @@ public class CustomerControllerTest {
     public void findCustomerByIdTest() throws Exception {
         String requestBody= objectMapper.writeValueAsString(customerDto);
 
-        var requestBuilder= MockMvcRequestBuilders.get("/api/customer/1")
+        var requestBuilder= MockMvcRequestBuilders.get("/api/customer/findbyid?id=1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody);
 
-        when(customerServiceInterface.findCustomerById(1)).thenReturn(customerDto);
+        when(customerService.findCustomerById(1)).thenReturn(customerDto);
 
         mockMvc.perform(requestBuilder)
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -128,7 +121,7 @@ public class CustomerControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody);
 
-        when(customerServiceInterface.findCustomerByFirstName("A")).thenReturn(customerDtos);
+        when(customerService.findCustomerByFirstName("A")).thenReturn(customerDtos);
 
         mockMvc.perform(requestBuilder)
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -143,7 +136,7 @@ public class CustomerControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody);
 
-        when(customerServiceInterface.findCustomerByLastName("L")).thenReturn(customerDtos);
+        when(customerService.findCustomerByLastName("L")).thenReturn(customerDtos);
 
         mockMvc.perform(requestBuilder)
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -159,7 +152,7 @@ public class CustomerControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody);
 
-        when(customerServiceInterface.findCustomerByPhone(1234)).thenReturn(customerDto);
+        when(customerService.findCustomerByPhone(1234)).thenReturn(customerDto);
 
         mockMvc.perform(requestBuilder)
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -174,7 +167,7 @@ public class CustomerControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody);
 
-        when(customerServiceInterface.findCustomerByEmail("a@l")).thenReturn(customerDto);
+        when(customerService.findCustomerByEmail("a@l")).thenReturn(customerDto);
 
         mockMvc.perform(requestBuilder)
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -191,7 +184,7 @@ public class CustomerControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody);
 
-        when(customerServiceInterface.findAll()).thenReturn(customerDtos);
+        when(customerService.findAll()).thenReturn(customerDtos);
 
         //the perform method simulates a request to the endpoint, like sending in Postman
         mockMvc.perform(requestBuilder)

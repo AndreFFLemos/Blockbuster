@@ -23,7 +23,7 @@ public class CustomerController implements CustomerControllerInterface {
     @Override
     @PostMapping(value = "/new")
     public ResponseEntity<CustomerDto> createCustomer(@RequestBody CustomerDto customerDto) {
-
+            //spring converts the dto instance in to a json format by using the Jackson library
         return new ResponseEntity<>(customerServiceInterface.createCustomer(customerDto),HttpStatus.OK);
     }
 
