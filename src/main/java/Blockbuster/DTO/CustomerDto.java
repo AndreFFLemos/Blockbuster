@@ -1,14 +1,28 @@
 package Blockbuster.DTO;
 
 import Blockbuster.Model.Customer;
+import jakarta.validation.constraints.*;
 
 import java.util.Objects;
 
 public class CustomerDto {
+    @NotBlank
+    @NotEmpty
     private String fName;
+    @NotBlank
+    @NotEmpty
     private String lName;
+    @NotBlank
+    @NotEmpty
     private String username;
+    @Email
+    @NotBlank
+    @NotEmpty
     private String email;
+    @NotBlank
+    @NotEmpty
+    @Min(value=4)
+    @Max(value=9)
     private int phone;
 
     public CustomerDto(String fName, String lName, String username, String email, int phone) {

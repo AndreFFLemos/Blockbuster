@@ -131,7 +131,7 @@ public class MovieService implements MovieServiceInterface{
                 .collect(Collectors.toList());    }
 
     @Override
-    public MovieDto watchMovie(CustomerDto customerDto, MovieDto movieDto) {
+    public MovieDto movieBeingWatched(CustomerDto customerDto, MovieDto movieDto) {
 
             Optional<Movie> existingMovie = movieRepository.findMovieByTitle(movieDto.getTitle());
             Optional<Customer> existingCustomer = customerRepository.findByPhone(customerDto.getPhone());

@@ -1,14 +1,29 @@
 package Blockbuster.DTO;
 
 import jakarta.persistence.Column;
-import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.*;
+import org.hibernate.validator.*;
 
 import java.util.Objects;
 
 public class MovieDto {
+
+    @NotBlank
+    @NotEmpty
     private String title;
+
+    @NotEmpty
+    @NotBlank
     private String genre;
+
+    @Digits(integer = 4,fraction = 0)
+    @Min(value=1900, message = "Movies didn't exist before 1900")
+    @Max(value = 2023, message = "Movies after the present year not accepted")
     private int releaseYear;
+
+    @Digits(integer = 2,fraction = 1)
+    @Min(value = 1, message="movie rating goes from 1 to 10")
+    @Max(value = 10,message="movie rating goes from 1 to 10")
     private float rating;
 
     public MovieDto(String title, String genre, int releaseYear, float rating) {

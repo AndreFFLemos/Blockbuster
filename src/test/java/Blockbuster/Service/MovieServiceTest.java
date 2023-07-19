@@ -201,13 +201,13 @@ class MovieServiceTest {
         //if movie exists
         when(movieRepository.findMovieByTitle("Rambo")).thenReturn(Optional.of(movie));
         when(customerRepository.findByPhone(1234)).thenReturn(Optional.of(customer));
-        MovieDto watchedMovie= ms.watchMovie(customerDto,movieDto);
+        MovieDto watchedMovie= ms.movieBeingWatched(customerDto,movieDto);
         assertEquals(movieDto,watchedMovie);
 
         //if movie doesn't exist
         movieDto.setTitle("ET");
         when(movieRepository.findMovieByTitle("ET")).thenReturn(Optional.empty());
-        MovieDto nonExistentMovie= ms.watchMovie(customerDto,movieDto);
+        MovieDto nonExistentMovie= ms.movieBeingWatched(customerDto,movieDto);
         assertNull(nonExistentMovie);
 
         verify(customerRepository,times(2)).findByPhone(1234);

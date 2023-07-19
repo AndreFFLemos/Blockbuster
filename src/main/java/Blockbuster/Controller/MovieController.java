@@ -1,8 +1,11 @@
 package Blockbuster.Controller;
 
+import Blockbuster.DTO.CustomerDto;
 import Blockbuster.DTO.MovieDto;
 import Blockbuster.Model.Movie;
 import Blockbuster.Service.MovieServiceInterface;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,19 +18,19 @@ public class MovieController implements MovieControllerInterface{
 
     @Override
     @PostMapping(value = "/new")
-    public ResponseEntity<MovieDto> createMovie(@RequestBody MovieDto movieDto) {
+    public ResponseEntity<MovieDto> createMovie(@Valid @RequestBody MovieDto movieDto) {
         return ResponseEntity.ok(movieServiceInterface.createMovie(movieDto));
     }
 
     @Override
     @GetMapping(value = "/findbyid")
-    public ResponseEntity<MovieDto> findMovieById(@RequestParam ("id") int id) {
+    public ResponseEntity<MovieDto> findMovieById(@Valid @RequestParam ("id") int id) {
         return ResponseEntity.ok(movieServiceInterface.findMovieById(id));
     }
 
     @Override
     @GetMapping(value = "/{id}")
-    public ResponseEntity<MovieDto> getMovie(@PathVariable int id) {
+    public ResponseEntity<MovieDto> getMovie(@Valid @PathVariable int id) {
         return ResponseEntity.ok(movieServiceInterface.findMovieById(id));
     }
 
@@ -39,19 +42,19 @@ public class MovieController implements MovieControllerInterface{
 
     @Override
     @GetMapping(value = "/findbyyear")
-    public ResponseEntity<List<MovieDto>> findMoviesByReleaseYear(@RequestParam ("year") int year) {
+    public ResponseEntity<List<MovieDto>> findMoviesByReleaseYear(@Valid @RequestParam ("year") int year) {
         return ResponseEntity.ok(movieServiceInterface.findMoviesByYear(year));
     }
 
     @Override
     @GetMapping(value = "/findbygenre")
-    public ResponseEntity<List<MovieDto>> findMoviesByGenre(@RequestParam ("genre") String genre) {
+    public ResponseEntity<List<MovieDto>> findMoviesByGenre(@Valid @RequestParam ("genre") String genre) {
         return ResponseEntity.ok(movieServiceInterface.findMoviesByGenre(genre));
     }
 
     @Override
     @PutMapping(value = "/{id}")
-    public ResponseEntity<MovieDto> updateMovie(@PathVariable int id,@RequestBody MovieDto movieDto) {
+    public ResponseEntity<MovieDto> updateMovie(@PathVariable int id, @Valid @RequestBody MovieDto movieDto) {
         return ResponseEntity.ok(movieServiceInterface.updateMovie(movieDto));
     }
 
@@ -62,6 +65,16 @@ public class MovieController implements MovieControllerInterface{
         movieServiceInterface.deleteMovieById(id);
 
         return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<MovieDto> movieBeingWatched(@Valid @RequestBody CustomerDto customerDto,@Valid @RequestBody MovieDto movieDto) {
+        MovieDto movieBeingWatched= movieServiceInterface.movieBeingWatched(customerDto,movieDto);
+
+        if (movieBeingWatched==null){
+            return new ResponseEntity<>(movieBeingWatched, HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(movieBeingWatched);
     }
 
 }

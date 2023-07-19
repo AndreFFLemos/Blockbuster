@@ -4,6 +4,7 @@ import Blockbuster.DTO.CustomerDto;
 import Blockbuster.DTO.MovieDto;
 import Blockbuster.Model.Customer;
 import Blockbuster.Service.CustomerServiceInterface;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -22,14 +23,14 @@ public class CustomerController implements CustomerControllerInterface {
 
     @Override
     @PostMapping(value = "/new")
-    public ResponseEntity<CustomerDto> createCustomer(@RequestBody CustomerDto customerDto) {
+    public ResponseEntity<CustomerDto> createCustomer(@Valid @RequestBody CustomerDto customerDto) {
             //spring converts the dto instance in to a json format by using the Jackson library
         return new ResponseEntity<>(customerServiceInterface.createCustomer(customerDto),HttpStatus.OK);
     }
 
     @Override
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteCustomer(@PathVariable int id,@RequestBody CustomerDto customerDto) {
+    public ResponseEntity<Void> deleteCustomer(@PathVariable int id,@Valid @RequestBody CustomerDto customerDto) {
 
         customerServiceInterface.deleteCustomer(customerDto);
 
@@ -44,7 +45,7 @@ public class CustomerController implements CustomerControllerInterface {
     }
     @Override
     @PutMapping(value = "/{id}")
-    public ResponseEntity<CustomerDto> updateCustomer(@PathVariable int id,@RequestBody CustomerDto customerDto) {
+    public ResponseEntity<CustomerDto> updateCustomer(@PathVariable int id,@Valid @RequestBody CustomerDto customerDto) {
         return ResponseEntity.ok(customerServiceInterface.updateCustomer(customerDto));
     }
 
@@ -56,7 +57,7 @@ public class CustomerController implements CustomerControllerInterface {
 
     @Override
     @GetMapping(value = "/findbyfirstname")
-    public ResponseEntity<List<CustomerDto>> findCustomerByFirstName(@RequestParam("firstName") String firstName) {
+    public ResponseEntity<List<CustomerDto>> findCustomerByFirstName(@Valid @RequestParam("firstName") String firstName) {
 
         return new ResponseEntity<>(customerServiceInterface.findCustomerByFirstName(firstName),HttpStatus.OK);
 
@@ -64,19 +65,19 @@ public class CustomerController implements CustomerControllerInterface {
 
     @Override
     @GetMapping (value = "/findbylastname")
-    public ResponseEntity<List<CustomerDto>> findCustomerByLastName(@RequestParam ("lastName") String lastName) {
+    public ResponseEntity<List<CustomerDto>> findCustomerByLastName(@Valid @RequestParam ("lastName") String lastName) {
         return new ResponseEntity<>(customerServiceInterface.findCustomerByLastName(lastName),HttpStatus.OK);
     }
 
     @Override
     @GetMapping(value = "/findbyemail")
-    public ResponseEntity<CustomerDto> findCustomerByEmail(@RequestParam ("email") String email) {
+    public ResponseEntity<CustomerDto> findCustomerByEmail(@Valid @RequestParam ("email") String email) {
         return ResponseEntity.ok(customerServiceInterface.findCustomerByEmail(email));
     }
 
     @Override
     @GetMapping(value = "/findbyphone")
-    public ResponseEntity<CustomerDto> findCustomerByPhone(@RequestParam ("number") int number) {
+    public ResponseEntity<CustomerDto> findCustomerByPhone(@Valid @RequestParam ("number") int number) {
         return ResponseEntity.ok(customerServiceInterface.findCustomerByPhone(number));
     }
 
@@ -89,7 +90,7 @@ public class CustomerController implements CustomerControllerInterface {
 
     @Override
     @GetMapping(value = "/{id}/movies")
-    public ResponseEntity<List<MovieDto>> getMoviesByCustomer(@PathVariable int id, @RequestBody CustomerDto customerDto) {
+    public ResponseEntity<List<MovieDto>> getMoviesByCustomer(@PathVariable int id, @Valid @RequestBody CustomerDto customerDto) {
         return null;
     }
 
