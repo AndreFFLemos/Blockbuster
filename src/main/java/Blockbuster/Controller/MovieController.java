@@ -4,54 +4,62 @@ import Blockbuster.DTO.MovieDto;
 import Blockbuster.Model.Movie;
 import Blockbuster.Service.MovieServiceInterface;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/movie")
 public class MovieController implements MovieControllerInterface{
-   private MovieServiceInterface msi;
+   private MovieServiceInterface movieServiceInterface;
 
     @Override
-    public ResponseEntity<MovieDto> createMovie(Movie movie) {
-        return null;
+    @PostMapping(value = "/new")
+    public ResponseEntity<MovieDto> createMovie(@RequestBody MovieDto movieDto) {
+        return ResponseEntity.ok(movieServiceInterface.createMovie(movieDto));
     }
 
     @Override
-    public ResponseEntity<MovieDto> findMovieById(int id) {
-        return null;
+    @GetMapping(value = "/findbyid")
+    public ResponseEntity<MovieDto> findMovieById(@RequestParam ("id") int id) {
+        return ResponseEntity.ok(movieServiceInterface.findMovieById(id));
     }
 
     @Override
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<MovieDto> getMovie(@PathVariable int id) {
+        return ResponseEntity.ok(movieServiceInterface.findMovieById(id));
+    }
+
+    @Override
+    @GetMapping(value = "/all")
     public ResponseEntity<List<MovieDto>> findAllMovies() {
-        return null;
+        return ResponseEntity.ok(movieServiceInterface.findAllMovies());
     }
 
     @Override
-    public ResponseEntity<List<MovieDto>> findMoviesByPrice(int price) {
-        return null;
+    @GetMapping(value = "/findbyyear")
+    public ResponseEntity<List<MovieDto>> findMoviesByReleaseYear(@RequestParam ("year") int year) {
+        return ResponseEntity.ok(movieServiceInterface.findMoviesByYear(year));
     }
 
     @Override
-    public ResponseEntity<List<MovieDto>> findMoviesByReleaseYear(int year) {
-        return null;
+    @GetMapping(value = "/findbygenre")
+    public ResponseEntity<List<MovieDto>> findMoviesByGenre(@RequestParam ("genre") String genre) {
+        return ResponseEntity.ok(movieServiceInterface.findMoviesByGenre(genre));
     }
 
     @Override
-    public ResponseEntity<List<MovieDto>> findMoviesByGenre(String genre) {
-        return null;
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<MovieDto> updateMovie(@PathVariable int id,@RequestBody MovieDto movieDto) {
+        return ResponseEntity.ok(movieServiceInterface.updateMovie(movieDto));
     }
 
     @Override
-    public ResponseEntity<MovieDto> updateMovie(Movie movie) {
-        return null;
-    }
+    @DeleteMapping(value = "/{id}")
+    public void deleteMovie(@PathVariable int id,@RequestBody MovieDto movieDto) {
 
-    @Override
-    public void deleteMovie(Movie movie) {
-
+        movieServiceInterface.deleteMovieById(id);
     }
 
 }

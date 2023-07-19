@@ -17,65 +17,82 @@ import java.util.Optional;
 @RequestMapping(value = "/api/customer")
 public class CustomerController implements CustomerControllerInterface {
 
-    private CustomerServiceInterface csi;
+    private CustomerServiceInterface customerServiceInterface;
 
 
     @Override
     @PostMapping(value = "/new")
     public ResponseEntity<CustomerDto> createCustomer(@RequestBody CustomerDto customerDto) {
 
-
-        return new ResponseEntity<>(customerDto,HttpStatus.OK);
+        return new ResponseEntity<>(customerServiceInterface.createCustomer(customerDto),HttpStatus.OK);
     }
 
     @Override
-    public void deleteCustomer(CustomerDto customerDto) {
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> deleteCustomer(@PathVariable int id,@RequestBody CustomerDto customerDto) {
 
+        customerServiceInterface.deleteCustomer(customerDto);
+
+        // the build method constructs a response entity with an empty body
+        return ResponseEntity.ok().build();
     }
-
     @GetMapping(value = "/{id}")
     @Override
-    public ResponseEntity<CustomerDto> findCustomerByID(@PathVariable int id) {
+    public ResponseEntity<CustomerDto> getCustomer(@PathVariable int id) {
 
-        CustomerDto optionalCustomerDto=csi.findCustomerById(id);
-        CustomerDto customerToSendToBrowser= optionalCustomerDto;
-
-        return new ResponseEntity<>(customerToSendToBrowser,HttpStatus.OK);
+        return new ResponseEntity<>(customerServiceInterface.findCustomerById(id),HttpStatus.OK);
+    }
+    @Override
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<CustomerDto> updateCustomer(@PathVariable int id,@RequestBody CustomerDto customerDto) {
+        return ResponseEntity.ok(customerServiceInterface.updateCustomer(customerDto));
     }
 
     @Override
-    public ResponseEntity<CustomerDto> findCustomerByFirstName(@PathVariable String firstName) {
+    @GetMapping(value = "/findbyid")
+    public ResponseEntity<CustomerDto> findCustomerByID(@RequestParam ("id") int id) {
+        return ResponseEntity.ok(customerServiceInterface.findCustomerById(id));
+    }
 
-        return null;
+    @Override
+    @GetMapping(value = "/findbyfirstname")
+    public ResponseEntity<List<CustomerDto>> findCustomerByFirstName(@RequestParam("firstName") String firstName) {
+
+        return new ResponseEntity<>(customerServiceInterface.findCustomerByFirstName(firstName),HttpStatus.OK);
 
     }
 
     @Override
-    public ResponseEntity<CustomerDto> findCustomerByEmail(@PathVariable String email) {
-        return null;
+    @GetMapping (value = "/findbylastname")
+    public ResponseEntity<List<CustomerDto>> findCustomerByLastName(@RequestParam ("lastName") String lastName) {
+        return new ResponseEntity<>(customerServiceInterface.findCustomerByLastName(lastName),HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<CustomerDto> findCustomerByPhone(@PathVariable int number) {
-        return null;
+    @GetMapping(value = "/findbyemail")
+    public ResponseEntity<CustomerDto> findCustomerByEmail(@RequestParam ("email") String email) {
+        return ResponseEntity.ok(customerServiceInterface.findCustomerByEmail(email));
+    }
+
+    @Override
+    @GetMapping(value = "/findbyphone")
+    public ResponseEntity<CustomerDto> findCustomerByPhone(@RequestParam ("number") int number) {
+        return ResponseEntity.ok(customerServiceInterface.findCustomerByPhone(number));
     }
 
     @Override
     @GetMapping(value = "/all")
     public ResponseEntity<List<CustomerDto>> findAllCustomers() {
-        List<CustomerDto> allCustomers= new LinkedList<>();
 
-        return new ResponseEntity<>(allCustomers, HttpStatus.OK);
+        return new ResponseEntity<>(customerServiceInterface.findAll(), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<List<MovieDto>> findMoviesByCustomer(@PathVariable CustomerDto customerDto) {
+    @GetMapping(value = "/{id}/movies")
+    public ResponseEntity<List<MovieDto>> getMoviesByCustomer(@PathVariable int id, @RequestBody CustomerDto customerDto) {
         return null;
     }
-    @Override
-    public ResponseEntity<CustomerDto> updateCustomer(@RequestBody CustomerDto customerDto) {
-        return null;
-    }
+
 
 
 }

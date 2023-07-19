@@ -17,6 +17,7 @@ public interface MovieServiceInterface {
     List<MovieDto> findMoviesByYear (int year);
     List<MovieDto> findMoviesByGenre (String genre);
     MovieDto watchMovie (CustomerDto customerDto,MovieDto movieDto);
+    List<MovieDto> findAllMovies();
 
 
 }
