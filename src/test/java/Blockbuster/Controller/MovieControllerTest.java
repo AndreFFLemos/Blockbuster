@@ -34,10 +34,10 @@ public class MovieControllerTest {
     private MovieDto movieDto;
     private List<MovieDto> movieDtos;
     @MockBean
-    MovieServiceInterface movieServiceInterface;
-    ObjectMapper objectMapper;
+    private MovieServiceInterface movieServiceInterface;
+    private ObjectMapper objectMapper;
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @BeforeEach
     void setup(){

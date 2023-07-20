@@ -18,10 +18,9 @@ public class CustomerDto {
     @NotBlank
     @NotEmpty
     private String email;
-    @NotBlank
-    @NotEmpty
-    @Min(value=4)
-    @Max(value=9)
+    @NotNull
+    @Min(value=0)
+    @Max(value=99999)
     private int phone;
 
     public CustomerDto(String firstName, String lastName, String username, String email, int phone) {
