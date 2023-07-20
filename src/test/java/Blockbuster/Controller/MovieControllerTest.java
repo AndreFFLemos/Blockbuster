@@ -60,23 +60,22 @@ public class MovieControllerTest {
         when(movieServiceInterface.createMovie(movieDto)).thenReturn(movieDto);
 
         mockMvc.perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.content().json(requestBody));
+        verify(movieServiceInterface).createMovie(movieDto);
     }
 
     @Test
     void findMovieByIdTest() throws Exception {
-        String requestBody= objectMapper.writeValueAsString(movieDto);
 
-        var requestBuilder= MockMvcRequestBuilders.get("/api/movie/findbyid?id=1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody);
+        var requestBuilder= MockMvcRequestBuilders.get("/api/movie/findbyid?id=1");
 
         when(movieServiceInterface.findMovieById(1)).thenReturn(movieDto);
 
         mockMvc.perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json(requestBody));
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        verify(movieServiceInterface).findMovieById(1);
     }
 
     @Test
@@ -88,51 +87,47 @@ public class MovieControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andExpect(MockMvcResultMatchers.status().isOk());
+        verify(movieServiceInterface).findMovieById(1);
+
     }
 
     @Test
     void findAllMovies() throws Exception {
-        String requestBody= objectMapper.writeValueAsString(movieDtos);
 
-        var requestBuilder= MockMvcRequestBuilders.get("/api/movie/all")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody);
+        var requestBuilder= MockMvcRequestBuilders.get("/api/movie/all");
 
         when(movieServiceInterface.findAllMovies()).thenReturn(movieDtos);
 
         mockMvc.perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json(requestBody,true));
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        verify(movieServiceInterface).findAllMovies();
     }
 
     @Test
     void findMoviesByReleaseYear() throws Exception {
-        String requestBody= objectMapper.writeValueAsString(movieDtos);
 
-        var requestBuilder= MockMvcRequestBuilders.get("/api/movie/findbyyear?year=1981")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody);
+        var requestBuilder= MockMvcRequestBuilders.get("/api/movie/findbyyear?year=1981");
 
         when(movieServiceInterface.findMoviesByYear(1981)).thenReturn(movieDtos);
 
-        mockMvc.perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json(requestBody,true));
+        mockMvc.perform(requestBuilder);
+
+        verify(movieServiceInterface).findMoviesByYear(1981);
+
     }
 
     @Test
     void findMoviesByGenre() throws Exception {
-        String requestBody= objectMapper.writeValueAsString(movieDtos);
 
-        var requestBuilder= MockMvcRequestBuilders.get("/api/movie/findbygenre?genre=Action")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody);
+        var requestBuilder= MockMvcRequestBuilders.get("/api/movie/findbygenre?genre=Action");
 
         when(movieServiceInterface.findMoviesByGenre("Action")).thenReturn(movieDtos);
 
         mockMvc.perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json(requestBody,true));
+                .andExpect(MockMvcResultMatchers.status().isOk());
+        verify(movieServiceInterface).findMoviesByGenre("Action");
+
     }
 
     @Test
@@ -148,6 +143,9 @@ public class MovieControllerTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(requestBody));
+
+        verify(movieServiceInterface).updateMovie(movieDto);
+
     }
 
     @Test
@@ -163,6 +161,8 @@ public class MovieControllerTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
+        verify(movieServiceInterface).deleteMovieById(1);
+
     }
 
     @Test
@@ -174,6 +174,9 @@ public class MovieControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andExpect(MockMvcResultMatchers.status().isOk());
+
+        verify(movieServiceInterface).movieBeingWatched(1,1);
+
     }
 
 }

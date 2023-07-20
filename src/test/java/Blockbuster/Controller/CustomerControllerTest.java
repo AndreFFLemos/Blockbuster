@@ -29,8 +29,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 @SpringBootTest(classes = BlockbusterApplication.class)
@@ -75,7 +74,9 @@ public class CustomerControllerTest {
 
         when(customerServiceInterface.createCustomer(customerDto)).thenReturn(customerDto);
         mockMvc.perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isCreated());
+
+        verify(customerServiceInterface).createCustomer(customerDto);
     }
 
     @Test
@@ -94,6 +95,8 @@ public class CustomerControllerTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(requestBody));
+
+        verify(customerServiceInterface).updateCustomer(customerDto);
     }
     @Test
     public void deleteCustomerTest() throws Exception {
@@ -108,7 +111,7 @@ public class CustomerControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andExpect(MockMvcResultMatchers.status().isOk());
-
+        verify(customerServiceInterface).deleteCustomer(customerDto);
     }
 
     @Test
@@ -120,6 +123,7 @@ public class CustomerControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andExpect(MockMvcResultMatchers.status().isOk());
+        verify(customerServiceInterface).findCustomerById(1);
     }
 
     @Test
@@ -130,7 +134,9 @@ public class CustomerControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andExpect(MockMvcResultMatchers.status().isOk());
-                //the true indicates that the json file can be an array or a single object
+
+        verify(customerServiceInterface).findCustomerByFirstName("A");
+
     }
     @Test
     public void findCustomerByLastNameTest() throws Exception {
@@ -140,6 +146,7 @@ public class CustomerControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andExpect(MockMvcResultMatchers.status().isOk());
+        verify(customerServiceInterface).findCustomerByLastName("L");
     }
 
     @Test
@@ -150,6 +157,7 @@ public class CustomerControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andExpect(MockMvcResultMatchers.status().isOk());
+        verify(customerServiceInterface).findCustomerByPhone(1234);
     }
 
     @Test
@@ -161,6 +169,8 @@ public class CustomerControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andExpect(MockMvcResultMatchers.status().isOk());
+
+        verify(customerServiceInterface).findCustomerByEmail("a@l");
     }
     @Test
     public void findAllCustomersTest() throws Exception {

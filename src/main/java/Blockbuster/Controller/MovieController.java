@@ -24,7 +24,7 @@ public class MovieController implements MovieControllerInterface {
     @Override
     @PostMapping(value = "/movie/new")
     public ResponseEntity<MovieDto> createMovie(@Valid @RequestBody MovieDto movieDto) {
-        return ResponseEntity.ok(movieServiceInterface.createMovie(movieDto));
+        return new ResponseEntity<>(movieServiceInterface.createMovie(movieDto),HttpStatus.CREATED);
     }
 
     @Override
