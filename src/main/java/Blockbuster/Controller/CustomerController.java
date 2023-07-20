@@ -88,6 +88,4 @@ public class CustomerController implements CustomerControllerInterface {
         return new ResponseEntity<>(customerServiceInterface.findAll(), HttpStatus.OK);
     }
 
-
-
 }
