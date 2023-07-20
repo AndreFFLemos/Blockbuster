@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -40,16 +41,15 @@ import static org.mockito.Mockito.*;
 @Import(SecurityConfig.class)
 public class CustomerControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc; // it simulates the request
-    @MockBean
+    private MockMvc mockMvc; // MockMvc class simulates http requests to the controllers in a test environment without using tomcat server
+    @Mock
     private CustomerServiceInterface customerServiceInterface;
     @InjectMocks
     private CustomerController customerController;
     private Customer customer;
     private CustomerDto customerDto;
     private List<CustomerDto> customerDtos;
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper= new ObjectMapper();//the objectmapper converts the Dto instance to a json format
 
     @BeforeEach
     public void setup(){
@@ -57,9 +57,9 @@ public class CustomerControllerTest {
         customer= new Customer(1,"A","L","AL",null,12345,"a@l");
         customerDto=new CustomerDto("A","L","AL","a@l",12345);
        customerDtos.add(customerDto);
-       //the objectmapper converts the Dto instance to a json format
-        objectMapper=new ObjectMapper();
-
+        // the following creates the MockMvc instance
+        mockMvc=MockMvcBuilders.standaloneSetup(customerController).build();
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
