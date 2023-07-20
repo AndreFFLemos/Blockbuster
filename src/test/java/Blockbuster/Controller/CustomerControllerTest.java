@@ -34,11 +34,6 @@ import static org.mockito.Mockito.*;
 
 
 @SpringBootTest(classes = BlockbusterApplication.class)
-@AutoConfigureMockMvc
-//this tells Spring to include a MockMvc instance in the test context. Without this, it couldnt find the
-// @ autowired mockmvc we told spring to provide and so the mockmvc wasnt properly instantiated and caused multiple UnsatisfiedDependencyExceptions
-//after this we also needed to bypass security configurations from Spring Security setup
-@Import(SecurityConfig.class)
 public class CustomerControllerTest {
 
     private MockMvc mockMvc; // MockMvc class simulates http requests to the controllers in a test environment without using tomcat server
