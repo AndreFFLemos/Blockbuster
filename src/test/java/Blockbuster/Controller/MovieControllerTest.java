@@ -8,6 +8,9 @@ import Blockbuster.BlockbusterApplication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -24,29 +28,27 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = BlockbusterApplication.class)
-@AutoConfigureMockMvc //this tells Spring to include a MockMvc instance in the test context. Without this, it couldnt find the
-// @ autowired mockmvc we told spring to provide and so the mockmvc wasnt properly instantiated and caused multiple UnsatisfiedDependencyExceptions
-//after this we also needed to bypass security configurations from Spring Security setup
-@Import(SecurityConfig.class)
 public class MovieControllerTest {
 
     private Movie movie;
     private MovieDto movieDto;
     private List<MovieDto> movieDtos;
-    @MockBean
+    @Mock
     private MovieServiceInterface movieServiceInterface;
-    private ObjectMapper objectMapper;
-    @Autowired
+    @InjectMocks
+    private MovieController movieController;
+    private final ObjectMapper objectMapper= new ObjectMapper();
     private MockMvc mockMvc;
 
     @BeforeEach
     void setup(){
-        objectMapper=new ObjectMapper();
         movieDtos=new LinkedList<>();
         movie= new Movie(0,"Rambo","Action",1981,7);
         movieDto= new MovieDto("Rambo","Action",1981,7);
         movieDtos.add(movieDto);
 
+        mockMvc = MockMvcBuilders.standaloneSetup(movieController).build();
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
