@@ -4,8 +4,11 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -17,9 +20,9 @@ public class Movie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name="title")
+    @Column(name="title",nullable = false)
     private String title;
-    @Column(name="genre")
+    @Column(name="genre",nullable = false)
     private String genre;
     @Column(name="releaseyear")
     private int releaseYear;
@@ -36,4 +39,5 @@ public class Movie {
         this.releaseYear = releaseYear;
         this.rating = rating;
     }
+
 }
