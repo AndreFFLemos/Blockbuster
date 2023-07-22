@@ -5,6 +5,7 @@ import Blockbuster.Repository.CustomerRepository;
 import Blockbuster.Model.Customer;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,28 +18,35 @@ public class CustomerService implements CustomerServiceInterface {
 
     private final CustomerRepository cr;
     private final ModelMapper modelMapper;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public CustomerService(CustomerRepository cr, ModelMapper modelMapper) {
+    public CustomerService(CustomerRepository cr, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
         this.cr = cr;
         this.modelMapper = modelMapper;
+        this.passwordEncoder=passwordEncoder;
     }
+
 
     public CustomerDto createCustomer(CustomerDto customerDto) {
         if (customerDto == null) {
             throw new IllegalArgumentException("customerDto is null");
         }
-        //convert the customerDto instance to a POJO instance and save the latter to the customer instance
-        Customer customer= modelMapper.map(customerDto, Customer.class);
 
         //if the customer is in the DB then the method will return an empty container meaning no saved Customer
-        Optional <Customer> customerExists= cr.findById(customer.getId());
+        Optional <Customer> customerExists= cr.findByEmail(customerDto.getEmail());
 
-        //it's cheaper in terms of resources to return an optional  than an throwing an exception for something that can be normal
+        //it's cheaper in terms of resources to return an optional  than throwing an exception for something that can be normal
         if (customerExists.isPresent()) {
             return null;
         }
 
+        //convert the customerDto instance to a POJO instance and save the latter to the customer instance
+        Customer customer= modelMapper.map(customerDto, Customer.class);
+
+        //passwordEncoder criptographs the password introduced by the customer
+        String thePassword=passwordEncoder.encode(customer.getPassword());
+        customer.setPassword(thePassword);
         //tell the repository to persist the customer instance and save that instance on the customer variable
         customer= cr.save(customer);
 
@@ -50,7 +58,7 @@ public class CustomerService implements CustomerServiceInterface {
 
     public void deleteCustomer(CustomerDto customerDto) {
 
-        Optional <Customer> customerExists= cr.findByPhone(customerDto.getPhone());
+        Optional <Customer> customerExists= cr.findByEmail(customerDto.getEmail());
         if (!customerExists.isPresent()) {
             System.out.println("No customer with that phone present");
         }
@@ -72,14 +80,14 @@ public class CustomerService implements CustomerServiceInterface {
     }
 
     public CustomerDto updateCustomer(CustomerDto customerDto) {
-        Optional<Customer> existingCustomer= cr.findByPhone(customerDto.getPhone());
+        Optional<Customer> existingCustomer= cr.findByEmail(customerDto.getEmail());
 
         //if the customer isn't found, then return nothing
         if (existingCustomer.isEmpty()){
             return null;
         }
         //repository delete the customer
-        cr.deleteByPhone(existingCustomer.get().getPhone());
+        cr.deleteByEmail(existingCustomer.get().getEmail());
         //convert the customerDto instance into a customer instance and save it
         Customer customer= modelMapper.map(customerDto, Customer.class);
         customer=cr.save(customer);

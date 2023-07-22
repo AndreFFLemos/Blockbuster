@@ -1,4 +1,4 @@
-package Blockbuster.Service;
+package Blockbuster.Security;
 
 import Blockbuster.Model.Customer;
 import io.jsonwebtoken.Claims;
