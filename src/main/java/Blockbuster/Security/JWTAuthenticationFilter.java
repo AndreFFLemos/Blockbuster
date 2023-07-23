@@ -40,29 +40,28 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String token= getToken(request);
+        String token = getToken(request);
 
         //from the token, let's get the identification
-        Optional<String> userEmail= jwtService.getUserId(token);
+        Optional<String> userEmail = jwtService.getUserId(token);
 
-        if (!userEmail.isPresent()){
-            throw new InputMismatchException("No user found");
+        if (userEmail.isPresent()) {
+
+            //with the email get the user
+            UserDetails customer = customUserDetailsService.loadUserByUsername(userEmail.get());
+
+            //the empty collections parameter are the permissions that the user has, and if the user is authenticated
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(customer, null, Collections.emptyList());
+
+            //sets the authentication context to the actual request in course
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+            //now spring security identify the user
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-
-        //with the email get the user
-        UserDetails customer= customUserDetailsService.loadUserByUsername(userEmail.get());
-
-        //the empty collections parameter are the permissions that the user has, and if the user is authenticated
-        UsernamePasswordAuthenticationToken authentication=
-                new UsernamePasswordAuthenticationToken(customer,null, Collections.emptyList());
-
-        //sets the authentication context to the actual request in course
-        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-        //now spring security identify the user
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        filterChain.doFilter(request,response);
     }
-
     //this method extracts the token from the authorization header of the request
     private String getToken(HttpServletRequest request){
         String token= request.getHeader("Authorization");

@@ -7,6 +7,7 @@ import Blockbuster.Model.Customer;
 import Blockbuster.Security.JWTService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,8 +27,6 @@ public class CustomerService implements CustomerServiceInterface {
     private final CustomerRepository cr;
     private final ModelMapper modelMapper;
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
     private JWTService jwtService;
@@ -39,7 +38,10 @@ public class CustomerService implements CustomerServiceInterface {
         this.passwordEncoder=passwordEncoder;
     }
 
-
+    @Autowired
+    public void setAuthenticationManager(@Lazy AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
 
     public CustomerDto createCustomer(CustomerDto customerDto) {
         if (customerDto == null) {
