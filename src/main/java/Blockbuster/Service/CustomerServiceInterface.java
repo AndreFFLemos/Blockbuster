@@ -1,6 +1,7 @@
 package Blockbuster.Service;
 
 import Blockbuster.DTO.CustomerDto;
+import Blockbuster.Model.UserLoginResponse;
 
 import java.util.List;
 
@@ -15,4 +16,5 @@ public interface CustomerServiceInterface {
     List <CustomerDto> findCustomerByLastName(String l);
     CustomerDto findCustomerByPhone(int i);
     CustomerDto findCustomerByEmail(String email);
+    UserLoginResponse login(String email, String password);
 }

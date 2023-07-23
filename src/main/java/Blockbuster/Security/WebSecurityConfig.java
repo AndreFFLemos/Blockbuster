@@ -13,6 +13,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+
+//this class provides the config for spring security
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
@@ -35,6 +37,8 @@ public class WebSecurityConfig {
         return new CustomUserDetailsService(modelMapper, customerService);
     }
 
+
+    //this retrieves the user details and compares the password of the user with the provided password
     @Bean
     public DaoAuthenticationProvider authenticationProvider(CustomUserDetailsService customUserDetailsService) {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -43,6 +47,7 @@ public class WebSecurityConfig {
         return authProvider;
     }
 
+    //it filters the requests to the URL to ensure the user is authenticated
     @Bean
     public FilterRegistrationBean<JWTAuthenticationFilter> jwtAuthenticationFilter() {
         FilterRegistrationBean<JWTAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();

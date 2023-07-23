@@ -1,11 +1,14 @@
 package Blockbuster.Controller;
 
 import Blockbuster.DTO.CustomerDto;
+import Blockbuster.Model.UserLoginRequest;
+import Blockbuster.Model.UserLoginResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -21,5 +24,5 @@ public interface CustomerControllerInterface {
     ResponseEntity<CustomerDto> updateCustomer(@PathVariable int id,@Valid @RequestBody CustomerDto customerDto);
     ResponseEntity<CustomerDto> createCustomer(@Valid @RequestBody CustomerDto customerDto);
     ResponseEntity<Void> deleteCustomer(@PathVariable int id, @Valid @RequestBody CustomerDto customerDto);
-
+    UserLoginResponse loginRequest(@RequestBody UserLoginRequest request);
 }

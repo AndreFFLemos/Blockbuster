@@ -20,7 +20,9 @@ public class CustomUserDetailsService implements UserDetailsService {
         this.customerService = customerService;
     }
 
-    @Override
+    @Override // from the userdetailsservice
+    // the method is invoked during the authentication process
+    //it takes an email as input and tries to load the customerDto based on the email
     public UserDetails loadUserByUsername(String email){
         CustomerDto customerDto= customerService.findCustomerByEmail(email);
 
@@ -32,8 +34,4 @@ public class CustomUserDetailsService implements UserDetailsService {
         return modelMapper.map(customerDto, UserDetails.class);
     }
 
-    public UserDetails loadUserById(int id){
-
-        return (UserDetails) customerService.findCustomerById(id);
-    }
 }

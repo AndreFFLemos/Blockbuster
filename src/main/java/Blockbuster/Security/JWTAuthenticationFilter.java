@@ -22,23 +22,21 @@ import java.util.Optional;
 
 
 //before the request enters our backend point on the controller, it will hit this class
-
+//that it's responsible for the authentication of the users in every request
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
-
+    //used to process the jwt token
     private JWTService jwtService;
-
+    //used to load the user details
     CustomUserDetailsService customUserDetailsService;
 
     public JWTAuthenticationFilter(JWTService jwtService, CustomUserDetailsService customUserDetailsService) {
         this.jwtService = jwtService;
         this.customUserDetailsService = customUserDetailsService;
     }
-    public JWTAuthenticationFilter(){
 
-    }
-
-    @Override
+    @Override //from onceperrequestfilter
+    //the method checks the token in the request, verifies the user and sets up the security context
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
@@ -51,7 +49,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             throw new InputMismatchException("No user found");
         }
 
-        //with the id let's get the user
+        //with the email get the user
         UserDetails customer= customUserDetailsService.loadUserByUsername(userEmail.get());
 
         //the empty collections parameter are the permissions that the user has, and if the user is authenticated
@@ -61,10 +59,11 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         //sets the authentication context to the actual request in course
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-        //resend the authentication to the Spring context and Spring takes care of it now
+        //now spring security identify the user
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
+    //this method extracts the token from the authorization header of the request
     private String getToken(HttpServletRequest request){
         String token= request.getHeader("Authorization");
 

@@ -1,6 +1,8 @@
 package Blockbuster.Controller;
 
 import Blockbuster.DTO.CustomerDto;
+import Blockbuster.Model.UserLoginRequest;
+import Blockbuster.Model.UserLoginResponse;
 import Blockbuster.Service.CustomerServiceInterface;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,7 @@ public class CustomerController implements CustomerControllerInterface {
         // the build method constructs a response entity with an empty body
         return ResponseEntity.ok().build();
     }
+
     @GetMapping(value = "/{id}")
     @Override
     public ResponseEntity<CustomerDto> getCustomer(@PathVariable int id) {
@@ -87,5 +90,9 @@ public class CustomerController implements CustomerControllerInterface {
 
         return new ResponseEntity<>(customerServiceInterface.findAll(), HttpStatus.OK);
     }
-
+    @Override
+    @PostMapping(value="/login")
+    public UserLoginResponse loginRequest(@RequestBody UserLoginRequest request) {
+        return customerServiceInterface.login(request.getEmail(), request.getPassword());
+    }
 }

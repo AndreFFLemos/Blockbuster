@@ -1,10 +1,16 @@
 package Blockbuster.Service;
 
 import Blockbuster.DTO.CustomerDto;
+import Blockbuster.Model.UserLoginResponse;
 import Blockbuster.Repository.CustomerRepository;
 import Blockbuster.Model.Customer;
+import Blockbuster.Security.JWTService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,9 +22,15 @@ import java.util.stream.Collectors;
 @Transactional
 public class CustomerService implements CustomerServiceInterface {
 
+    private static final String headerPrefix= "Bearer";
     private final CustomerRepository cr;
     private final ModelMapper modelMapper;
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private JWTService jwtService;
 
     @Autowired
     public CustomerService(CustomerRepository cr, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
@@ -26,6 +38,7 @@ public class CustomerService implements CustomerServiceInterface {
         this.modelMapper = modelMapper;
         this.passwordEncoder=passwordEncoder;
     }
+
 
 
     public CustomerDto createCustomer(CustomerDto customerDto) {
@@ -164,5 +177,22 @@ public class CustomerService implements CustomerServiceInterface {
         CustomerDto customerDto=modelMapper.map(foundCustomer, CustomerDto.class);
 
         return customerDto;
+    }
+
+    public UserLoginResponse login(String email, String password){
+
+        //the authentication manager gets the login values and if they match an existent user it checks its authentication
+        Authentication authentication= authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email,password,Collections.emptyList()));
+
+        //and now Spring knows there is an authenticated user
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String token= headerPrefix+jwtService.generateToken(authentication);
+
+        Optional<Customer> customerFound= cr.findByEmail(email);
+        Customer customer= customerFound.get();
+        CustomerDto customerDto= modelMapper.map(customer,CustomerDto.class);
+
+        return new UserLoginResponse(token,customerDto);
     }
 }
