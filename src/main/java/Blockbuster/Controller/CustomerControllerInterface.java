@@ -14,6 +14,7 @@ import java.util.List;
 
 public interface CustomerControllerInterface {
 
+
     ResponseEntity<CustomerDto> findCustomerByID(@RequestParam("id") int id);
     ResponseEntity<CustomerDto> getCustomer(@PathVariable int id);
     ResponseEntity <List<CustomerDto>> findCustomerByFirstName(@Valid @RequestParam("firstName") String firstName);
@@ -22,7 +23,6 @@ public interface CustomerControllerInterface {
     ResponseEntity<CustomerDto> findCustomerByPhone(@Valid @RequestParam ("number") int number);
     ResponseEntity<List<CustomerDto>> findAllCustomers();
     ResponseEntity<CustomerDto> updateCustomer(@PathVariable int id,@Valid @RequestBody CustomerDto customerDto);
-    ResponseEntity<CustomerDto> createCustomer(@Valid @RequestBody CustomerDto customerDto);
     ResponseEntity<Void> deleteCustomer(@PathVariable int id, @Valid @RequestBody CustomerDto customerDto);
     UserLoginResponse loginRequest(@RequestBody UserLoginRequest request);
 }

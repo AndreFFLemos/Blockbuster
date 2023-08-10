@@ -60,18 +60,19 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             //now spring security identify the user
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(request, response);
     }
+
     //this method extracts the token from the authorization header of the request
-    private String getToken(HttpServletRequest request){
-        String token= request.getHeader("Authorization");
+    private String getToken(HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
 
         //Spring class with a method to check if the token came with more than white spaces or not
-        if (!StringUtils.hasText(token)){
-        return null;
+        //the token returns a String but the first 6 letters are Bearer, I want it to return what's next
+        if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
+            return token.substring(7);
         }
 
-        //the token returns a String but the first 6 letters are Bearer, I want it to return what's next
-        return token.substring(7);
+        return null;
     }
 }

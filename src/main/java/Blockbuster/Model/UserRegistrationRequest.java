@@ -1,9 +1,9 @@
 package Blockbuster.Model;
 
-public class UserLoginRequest {
-
+public class UserRegistrationRequest {
     private String email;
     private String password;
+    private String name;
 
     public String getEmail() {
         return email;
@@ -19,5 +19,13 @@ public class UserLoginRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

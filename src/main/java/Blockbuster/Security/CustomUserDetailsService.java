@@ -19,6 +19,9 @@ public class CustomUserDetailsService implements UserDetailsService {
         this.modelMapper = modelMapper;
         this.customerService = customerService;
     }
+    public CustomUserDetailsService(){
+
+    }
 
     @Override // from the userdetailsservice
     // the method is invoked during the authentication process

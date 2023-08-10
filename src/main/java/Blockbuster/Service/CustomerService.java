@@ -2,6 +2,7 @@ package Blockbuster.Service;
 
 import Blockbuster.DTO.CustomerDto;
 import Blockbuster.Model.UserLoginResponse;
+import Blockbuster.Model.UserRegistrationRequest;
 import Blockbuster.Repository.CustomerRepository;
 import Blockbuster.Model.Customer;
 import Blockbuster.Security.JWTService;
@@ -25,6 +26,7 @@ public class CustomerService implements CustomerServiceInterface {
 
     private static final String headerPrefix= "Bearer";
     private final CustomerRepository cr;
+    private UserRegistrationRequest userRegistration;
     private final ModelMapper modelMapper;
     private PasswordEncoder passwordEncoder;
     private AuthenticationManager authenticationManager;
@@ -43,13 +45,13 @@ public class CustomerService implements CustomerServiceInterface {
         this.authenticationManager = authenticationManager;
     }
 
-    public CustomerDto createCustomer(CustomerDto customerDto) {
-        if (customerDto == null) {
-            throw new IllegalArgumentException("customerDto is null");
+    public CustomerDto createCustomer(UserRegistrationRequest userRegistration) {
+        if (userRegistration == null) {
+            throw new IllegalArgumentException("user is null");
         }
 
         //if the customer is in the DB then the method will return an empty container meaning no saved Customer
-        Optional <Customer> customerExists= cr.findByEmail(customerDto.getEmail());
+        Optional <Customer> customerExists= cr.findByEmail(userRegistration.getEmail());
 
         //it's cheaper in terms of resources to return an optional  than throwing an exception for something that can be normal
         if (customerExists.isPresent()) {
@@ -57,7 +59,7 @@ public class CustomerService implements CustomerServiceInterface {
         }
 
         //convert the customerDto instance to a POJO instance and save the latter to the customer instance
-        Customer customer= modelMapper.map(customerDto, Customer.class);
+        Customer customer= modelMapper.map(userRegistration, Customer.class);
 
         //passwordEncoder criptographs the password introduced by the customer
         String thePassword=passwordEncoder.encode(customer.getPassword());

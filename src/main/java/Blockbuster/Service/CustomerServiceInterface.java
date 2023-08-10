@@ -2,12 +2,13 @@ package Blockbuster.Service;
 
 import Blockbuster.DTO.CustomerDto;
 import Blockbuster.Model.UserLoginResponse;
+import Blockbuster.Model.UserRegistrationRequest;
 
 import java.util.List;
 
 public interface CustomerServiceInterface {
 
-    CustomerDto createCustomer(CustomerDto customerDto);
+    CustomerDto createCustomer(UserRegistrationRequest userRegistration);
     void deleteCustomer(CustomerDto customerDto);
     CustomerDto findCustomerById(int id);
     CustomerDto updateCustomer(CustomerDto customerDto);

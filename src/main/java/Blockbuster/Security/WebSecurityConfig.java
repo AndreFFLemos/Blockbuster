@@ -1,9 +1,7 @@
 package Blockbuster.Security;
 
 import Blockbuster.Service.CustomerService;
-import Blockbuster.Service.CustomerServiceInterface;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,15 +9,13 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.Arrays;
 
@@ -30,12 +26,12 @@ import java.util.Arrays;
 public class WebSecurityConfig {
     private final JWTService jwtService;
     private final ModelMapper modelMapper;
-    private final UserDetailsService userDetailsService;
+    private final CustomUserDetailsService customUserDetailsService;
 
-    public WebSecurityConfig(JWTService jwtService, ModelMapper modelMapper, @Lazy UserDetailsService userDetailsService) {
+    public WebSecurityConfig(JWTService jwtService, ModelMapper modelMapper, @Lazy CustomUserDetailsService customUserDetailsService) {
         this.jwtService = jwtService;
         this.modelMapper = modelMapper;
-        this.userDetailsService = userDetailsService;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     @Bean
@@ -68,6 +64,20 @@ public class WebSecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager() throws Exception {
         return new ProviderManager(Arrays.asList(authenticationProvider(customUserDetailsService(null))));
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeRequests()
+                .requestMatchers("/api/register").permitAll()  // Public access
+                .requestMatchers("/api/customer/**").authenticated()  // Requires authentication
+                .anyRequest().permitAll()  // Any other request is public
+                .and()
+                .addFilterBefore(new JWTAuthenticationFilter(jwtService, customUserDetailsService),
+                        UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
     }
 }
 
