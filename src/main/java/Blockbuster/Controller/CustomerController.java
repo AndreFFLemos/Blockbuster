@@ -1,9 +1,12 @@
 package Blockbuster.Controller;
 
 import Blockbuster.DTO.CustomerDto;
+import Blockbuster.Model.Email;
 import Blockbuster.Model.UserLoginRequest;
 import Blockbuster.Model.UserLoginResponse;
 import Blockbuster.Service.CustomerServiceInterface;
+import Blockbuster.Service.EmailService;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,10 +20,12 @@ import java.util.List;
 public class CustomerController implements CustomerControllerInterface {
 
     private CustomerServiceInterface customerServiceInterface;
+    private EmailService emailService;
 
     @Autowired
-    public CustomerController(CustomerServiceInterface customerServiceInterface) {
+    public CustomerController(CustomerServiceInterface customerServiceInterface, EmailService emailService) {
         this.customerServiceInterface = customerServiceInterface;
+        this.emailService = emailService;
     }
 
     @Override
@@ -55,6 +60,7 @@ public class CustomerController implements CustomerControllerInterface {
     @Override
     @GetMapping(value = "/findbyid")
     public ResponseEntity<CustomerDto> findCustomerByID(@RequestParam ("id") int id) {
+
         return ResponseEntity.ok(customerServiceInterface.findCustomerById(id));
     }
 
@@ -94,5 +100,16 @@ public class CustomerController implements CustomerControllerInterface {
     @PostMapping(value="/login")
     public UserLoginResponse loginRequest(@RequestBody UserLoginRequest request) {
         return customerServiceInterface.login(request.getEmail(), request.getPassword());
+    }
+
+    @PostMapping(value="/email")
+    public String sendEmail(@RequestBody Email email){
+        try {
+            emailService.sendEmail(email);
+            return "it sended";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error";
+        }
     }
 }

@@ -2,16 +2,13 @@ package Blockbuster.Model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,14 +27,7 @@ public class Movie {
     private float rating;
     //the mappedBy attribute indicates that the relationship is managed by the customer side
     @ManyToMany(mappedBy = "watchedMovies")
+    @Builder.Default //this guarantees that the instances are created via builder and values are always present
     private List<Customer> viewers= new ArrayList<>();
-
-    public Movie(int id, String title, String genre, int releaseYear, float rating) {
-        this.id = id;
-        this.title = title;
-        this.genre = genre;
-        this.releaseYear = releaseYear;
-        this.rating = rating;
-    }
 
 }
