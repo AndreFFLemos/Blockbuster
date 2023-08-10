@@ -5,10 +5,7 @@ import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -16,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-
+@Builder
 @Data //Lombok takes care of the getters and setters
 @NoArgsConstructor
 @AllArgsConstructor
@@ -48,17 +45,8 @@ public class Customer implements UserDetails {
             joinColumns = @JoinColumn(name = "customer_id"),
             inverseJoinColumns = @JoinColumn(name = "movie_id"))
     @ToString.Exclude //the tostring was causing a recursive issue between the customer and movie objects
+    @Builder.Default
     private List <Movie> watchedMovies= new ArrayList<>();//arraylist use less memory and is quicker with large lists
-
-    public Customer(int id, String firstName, String lastName, String username, String password, int phone, String email) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.username = username;
-        this.password = password;
-        this.phone = phone;
-        this.email = email;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
