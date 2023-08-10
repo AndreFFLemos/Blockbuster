@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.jruby.javasupport.ext.JavaTime;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -15,13 +16,15 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Component
 public class JWTService {
 
     // Read the private key from a secure configuration or environment variable
-    private static final String privateKey = "supersecretkey"; //this is to exemplify, not real.
+    @Value("${jwt.secretKey}")
+    private String secretKey;
 
     // The expiration time of the token in seconds (1 hour)
     private static final long tokenDuration = Duration.ofHours(5).getSeconds();
@@ -39,8 +42,12 @@ public class JWTService {
                 .setSubject(customer.getEmail()) //specifies what should be used to identify the customer
                 .setIssuedAt(Date.from(now)) //when the token was issued
                 .setExpiration(Date.from(expirationTime))//will end at a specified time
-                .signWith(SignatureAlgorithm.HS512, privateKey)// the algorithm used to create the token and the key used that only the server knows
+                .signWith(SignatureAlgorithm.HS512, secretKey)// the algorithm used to create the token and the key used that only the server knows
                 .compact(); //compact the token and returns it as a String representation
+    }
+    public List<String> getRolesFromToken(String token) {
+        Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+        return claims.get("roles", List.class);
     }
 
     public Optional<String> getUserId(String token) {
@@ -60,7 +67,7 @@ public class JWTService {
 
     private Claims parse(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(privateKey)
+                .setSigningKey(secretKey)
                 .build()
                 .parseClaimsJws(token) //this method parses the token and if the signature matches it returns a Claims object with the claims and the signature.
                 .getBody(); //and then it returns a Claims object with just the JSON payload(claims).

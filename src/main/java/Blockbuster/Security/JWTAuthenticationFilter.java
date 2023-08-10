@@ -6,7 +6,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,12 +21,17 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 //before the request enters our backend point on the controller, it will hit this class
 //that it's responsible for the authentication of the users in every request
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
+
+    @Value("${jwt.secretKey}")
+    private String secretKey;
 
     //used to process the jwt token
     private JWTService jwtService;
@@ -49,10 +57,17 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
             //with the email get the user
             UserDetails customer = customUserDetailsService.loadUserByUsername(userEmail.get());
+            // Get the roles from the JWT token
+            List<String> roles = jwtService.getRolesFromToken(token);
+
+            // Convert the roles to GrantedAuthority objects
+            List<GrantedAuthority> authorities = roles.stream()
+                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                    .collect(Collectors.toList());
 
             //the empty collections parameter are the permissions that the user has, and if the user is authenticated
             UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(customer, null, Collections.emptyList());
+                    new UsernamePasswordAuthenticationToken(customer, null, authorities);
 
             //sets the authentication context to the actual request in course
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

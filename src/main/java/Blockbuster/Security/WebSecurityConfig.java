@@ -1,7 +1,10 @@
 package Blockbuster.Security;
 
 import Blockbuster.Service.CustomerService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +14,7 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,12 +22,15 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.Arrays;
+import java.util.List;
 
 
 //this class provides the config for spring security
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
+    @Value("${jwt.secretKey}")
+    private String secretKey;
     private final JWTService jwtService;
     private final ModelMapper modelMapper;
     private final CustomUserDetailsService customUserDetailsService;
@@ -55,26 +62,26 @@ public class WebSecurityConfig {
 
     //it filters the requests to the URL to ensure the user is authenticated
     @Bean
-    public FilterRegistrationBean<JWTAuthenticationFilter> jwtAuthenticationFilter() {
-        FilterRegistrationBean<JWTAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new JWTAuthenticationFilter(jwtService, customUserDetailsService(null)));
-        registrationBean.addUrlPatterns("/api/customer"); // Only the customer is authenticated
-        return registrationBean;
+    public JWTAuthenticationFilter jwtAuthenticationFilter() {
+        return new JWTAuthenticationFilter(jwtService, customUserDetailsService);
+
     }
     @Bean
     public AuthenticationManager authenticationManager() throws Exception {
-        return new ProviderManager(Arrays.asList(authenticationProvider(customUserDetailsService(null))));
+        return new ProviderManager(Arrays.asList(authenticationProvider(customUserDetailsService)));
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // Add this line
+                .and()
                 .authorizeRequests()
                 .requestMatchers("/api/register").permitAll()  // Public access
                 .requestMatchers("/api/customer/**").authenticated()  // Requires authentication
                 .anyRequest().permitAll()  // Any other request is public
                 .and()
-                .addFilterBefore(new JWTAuthenticationFilter(jwtService, customUserDetailsService),
+                .addFilterBefore(jwtAuthenticationFilter(),
                         UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

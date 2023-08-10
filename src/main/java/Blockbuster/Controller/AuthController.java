@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-    @RequestMapping("/api")
+    @RequestMapping(value= "/api")
     public class AuthController {
 
         @Autowired
         private CustomerServiceInterface customerServiceInterface;
 
-        @PostMapping("/register")
+        @PostMapping(value = "/register")
         public ResponseEntity<?> register(@RequestBody UserRegistrationRequest registrationRequest) {
             // Check if user already exists
             if(customerServiceInterface.findCustomerByEmail(registrationRequest.getEmail())!=null) {
