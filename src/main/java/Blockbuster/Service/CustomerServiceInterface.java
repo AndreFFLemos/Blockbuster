@@ -9,9 +9,9 @@ import java.util.List;
 public interface CustomerServiceInterface {
 
     CustomerDto createCustomer(UserRegistrationRequest userRegistration);
-    void deleteCustomer(CustomerDto customerDto);
+    void deleteCustomer(int id);
     CustomerDto findCustomerById(int id);
-    CustomerDto updateCustomer(CustomerDto customerDto);
+    CustomerDto updateCustomer(int id,CustomerDto customerDto);
     List <CustomerDto> findAll();
     List <CustomerDto> findCustomerByFirstName(String name);
     List <CustomerDto> findCustomerByLastName(String l);

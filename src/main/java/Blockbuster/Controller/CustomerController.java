@@ -30,9 +30,9 @@ public class CustomerController implements CustomerControllerInterface {
 
     @Override
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteCustomer(@PathVariable int id,@Valid @RequestBody CustomerDto customerDto) {
+    public ResponseEntity<Void> deleteCustomer(@PathVariable int id) {
 
-        customerServiceInterface.deleteCustomer(customerDto);
+        customerServiceInterface.deleteCustomer(id);
 
         // the build method constructs a response entity with an empty body
         return ResponseEntity.ok().build();
@@ -45,43 +45,51 @@ public class CustomerController implements CustomerControllerInterface {
         return new ResponseEntity<>(customerServiceInterface.findCustomerById(id),HttpStatus.OK);
     }
     @Override
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<CustomerDto> updateCustomer(@PathVariable int id,@Valid @RequestBody CustomerDto customerDto) {
-        return ResponseEntity.ok(customerServiceInterface.updateCustomer(customerDto));
+    @PutMapping(value = "/update/{id}")
+    public ResponseEntity<CustomerDto> updateCustomer(@PathVariable int id,@Valid @RequestBody CustomerDto toUpdateCustomerDto) {
+        //the browser sends the updated customer data in the body of the request in JSON format.
+        CustomerDto updatedCustomerDto= customerServiceInterface.updateCustomer(id,toUpdateCustomerDto);
+
+        if (updatedCustomerDto == null) {
+            return ResponseEntity.notFound().build(); // If the customer wasn't found
+        }
+
+        return ResponseEntity.ok(updatedCustomerDto);
     }
 
     @Override
-    @GetMapping(value = "/findbyid")
+    @GetMapping(value = "/byid")
     public ResponseEntity<CustomerDto> findCustomerByID(@RequestParam ("id") int id) {
 
         return ResponseEntity.ok(customerServiceInterface.findCustomerById(id));
     }
 
     @Override
-    @GetMapping(value = "/findbyfirstname")
-    public ResponseEntity<List<CustomerDto>> findCustomerByFirstName(@Valid @RequestParam("firstName") String firstName) {
+    @GetMapping(value = "/byfirstname")
+    public ResponseEntity<List<CustomerDto>> findCustomerByFirstName(@Valid @RequestParam("firstname") String firstName) {
 
         return new ResponseEntity<>(customerServiceInterface.findCustomerByFirstName(firstName),HttpStatus.OK);
 
     }
 
     @Override
-    @GetMapping (value = "/findbylastname")
+    @GetMapping (value = "/bylastname")
     public ResponseEntity<List<CustomerDto>> findCustomerByLastName(@Valid @RequestParam ("lastName") String lastName) {
         return new ResponseEntity<>(customerServiceInterface.findCustomerByLastName(lastName),HttpStatus.OK);
     }
 
     @Override
-    @GetMapping(value = "/findbyemail")
+    @GetMapping(value = "/byemail")
     public ResponseEntity<CustomerDto> findCustomerByEmail(@Valid @RequestParam ("email") String email) {
         return ResponseEntity.ok(customerServiceInterface.findCustomerByEmail(email));
     }
 
+    /*
     @Override
     @GetMapping(value = "/findbyphone")
     public ResponseEntity<CustomerDto> findCustomerByPhone(@Valid @RequestParam ("number") int number) {
         return ResponseEntity.ok(customerServiceInterface.findCustomerByPhone(number));
-    }
+    } */
 
     @Override
     @GetMapping(value = "/all")

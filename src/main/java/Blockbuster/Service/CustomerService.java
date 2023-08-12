@@ -76,14 +76,14 @@ public class CustomerService implements CustomerServiceInterface {
         return  customerDto1;
     }
 
-    public void deleteCustomer(CustomerDto customerDto) {
+    public void deleteCustomer(int id) {
 
-        Optional <Customer> customerExists= cr.findByEmail(customerDto.getEmail());
+        Optional <Customer> customerExists= cr.findById(id);
         if (!customerExists.isPresent()) {
-            System.out.println("No customer with that email present");
+            System.out.println("No customer with that id present");
         }
-        Customer customer= modelMapper.map(customerDto, Customer.class);
-        cr.delete(customer);
+
+        cr.deleteById(id);
     }
 
     public CustomerDto findCustomerById(int id) {
@@ -99,17 +99,21 @@ public class CustomerService implements CustomerServiceInterface {
         return customerDto;
     }
 
-    public CustomerDto updateCustomer(CustomerDto customerDto) {
-        Optional<Customer> existingCustomer= cr.findByEmail(customerDto.getEmail());
-
+    public CustomerDto updateCustomer(int id, CustomerDto customerDto) {
+        Optional<Customer> existingOptCustomer= cr.findById(id);
         //if the customer isn't found, then return nothing
-        if (existingCustomer.isEmpty()){
+        if (existingOptCustomer.isEmpty()){
             return null;
         }
-        //repository delete the customer
-        cr.deleteByEmail(existingCustomer.get().getEmail());
+        //get the instance customer from the optional
+        Customer persistedCustomer= existingOptCustomer.get();
+
         //convert the customerDto instance into a customer instance and save it
         Customer customer= modelMapper.map(customerDto, Customer.class);
+        //because the customerDto doesnt have a password attribute then use the existing pass
+        String thePassword=passwordEncoder.encode(persistedCustomer.getPassword());
+        customer.setPassword(thePassword);
+        //customer.setId(id);
         customer=cr.save(customer);
 
         //convert back that persisted customer in to a customerDto and return it

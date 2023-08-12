@@ -20,9 +20,9 @@ public interface CustomerControllerInterface {
     ResponseEntity <List<CustomerDto>> findCustomerByFirstName(@Valid @RequestParam("firstName") String firstName);
     ResponseEntity<List<CustomerDto>> findCustomerByLastName(@Valid @RequestParam("lastName") String lastName);
     ResponseEntity<CustomerDto> findCustomerByEmail(@Valid @RequestParam("email") String email);
-    ResponseEntity<CustomerDto> findCustomerByPhone(@Valid @RequestParam ("number") int number);
+    //ResponseEntity<CustomerDto> findCustomerByPhone(@Valid @RequestParam ("number") int number);
     ResponseEntity<List<CustomerDto>> findAllCustomers();
     ResponseEntity<CustomerDto> updateCustomer(@PathVariable int id,@Valid @RequestBody CustomerDto customerDto);
-    ResponseEntity<Void> deleteCustomer(@PathVariable int id, @Valid @RequestBody CustomerDto customerDto);
+    ResponseEntity<Void> deleteCustomer(@PathVariable int id);
     UserLoginResponse loginRequest(@RequestBody UserLoginRequest request);
 }
