@@ -74,11 +74,12 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // Add this line
-                .and()
+                .csrf((csrf) -> csrf
+                        .ignoringRequestMatchers("/api/register")
+                )
                 .authorizeRequests()
                 .requestMatchers("/api/register").permitAll()  // Public access
-                .requestMatchers("/api/customer/**").authenticated()  // Requires authentication
+                .requestMatchers("/api/customer/**").permitAll()  // Requires authentication
                 .anyRequest().permitAll()  // Any other request is public
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter(),

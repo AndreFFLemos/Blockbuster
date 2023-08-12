@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 
 //before the request enters our backend point on the controller, it will hit this class
-//that it's responsible for the authentication of the users in every request
+//responsible for the authentication of the users in every request
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     @Value("${jwt.secretKey}")
@@ -36,7 +36,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     //used to process the jwt token
     private JWTService jwtService;
     //used to load the user details
-    CustomUserDetailsService customUserDetailsService;
+    private CustomUserDetailsService customUserDetailsService;
 
     public JWTAuthenticationFilter(JWTService jwtService, CustomUserDetailsService customUserDetailsService) {
         this.jwtService = jwtService;
