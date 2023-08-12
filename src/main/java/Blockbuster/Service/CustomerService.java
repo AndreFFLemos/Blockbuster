@@ -61,6 +61,9 @@ public class CustomerService implements CustomerServiceInterface {
         //convert the customerDto instance to a POJO instance and save the latter to the customer instance
         Customer customer= modelMapper.map(userRegistration, Customer.class);
 
+        if(customer.getPassword() == null || customer.getPassword().isEmpty()) {
+            throw new IllegalArgumentException("Password is missing or empty");
+        }
         //passwordEncoder criptographs the password introduced by the customer
         String thePassword=passwordEncoder.encode(customer.getPassword());
         customer.setPassword(thePassword);
@@ -77,7 +80,7 @@ public class CustomerService implements CustomerServiceInterface {
 
         Optional <Customer> customerExists= cr.findByEmail(customerDto.getEmail());
         if (!customerExists.isPresent()) {
-            System.out.println("No customer with that phone present");
+            System.out.println("No customer with that email present");
         }
         Customer customer= modelMapper.map(customerDto, Customer.class);
         cr.delete(customer);

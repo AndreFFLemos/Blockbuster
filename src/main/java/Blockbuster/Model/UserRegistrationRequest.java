@@ -1,9 +1,12 @@
 package Blockbuster.Model;
 
+import jakarta.validation.constraints.Size;
+
 public class UserRegistrationRequest {
     private String email;
+    @Size(min = 8, max = 20, message = "Password must be between 8 and 20 characters.")
     private String password;
-    private String name;
+    private String firstName;
 
     public String getEmail() {
         return email;
@@ -21,11 +24,11 @@ public class UserRegistrationRequest {
         this.password = password;
     }
 
-    public String getName() {
-        return name;
+    public String getfirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String firstName) {
+        this.firstName = firstName;
     }
 }

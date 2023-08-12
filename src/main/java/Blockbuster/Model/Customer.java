@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -32,8 +31,8 @@ public class Customer implements UserDetails {
     @Column(name="username",nullable = false,unique = true)
     private String username;
     @Column(name="hashedpass",nullable = false)
-    @Size(min = 8, max = 20)
-    private String password;
+    private String password;//the hashpassword is the value being persisted.
+    //the password in the userregistration class is the real pass
     @Column(name="phone")
     @Digits(integer = 5,fraction = 0,message = "The number has to have 5 digits")
     private int phone;
