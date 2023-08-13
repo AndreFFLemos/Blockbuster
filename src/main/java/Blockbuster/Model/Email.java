@@ -1,50 +1,31 @@
 package Blockbuster.Model;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.List;
 
+@Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@Table(name="Emails")
 public class Email {
 
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private int id;
+    @Column(name="subject",nullable = false)
     private String subject;
+    @Column(name="body",nullable = false)
     private String body;
+    @Column(name="sender",nullable = false)
     private String sender;
+    @Column(name="receivers",nullable = false)
     private List<String> receivers;
 
-    public Email(String subject, String body, String sender, List<String> receivers) {
-        this.subject = subject;
-        this.body = body;
-        this.sender = sender;
-        this.receivers = receivers;
-    }
-
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
-
-    public String getSender() {
-        return sender;
-    }
-
-    public void setSender(String sender) {
-        this.sender = sender;
-    }
-
-    public List<String> getReceivers() {
-        return receivers;
-    }
-
-    public void setReceivers(List<String> receivers) {
-        this.receivers = receivers;
-    }
 }

@@ -177,18 +177,6 @@ public class CustomerService implements CustomerServiceInterface {
     }
 
     @Override
-    public CustomerDto findCustomerByPhone(int phone) {
-        Optional <Customer> foundCustomer= cr.findByPhone(phone);
-
-        if (foundCustomer.isEmpty()) {
-            return null;
-        }
-        CustomerDto customerDto=modelMapper.map(foundCustomer, CustomerDto.class);
-
-        return customerDto;
-    }
-
-    @Override
     public Customer findCustomerByEmail(String email) {
         Optional <Customer> foundCustomer= cr.findByEmail(email);
 

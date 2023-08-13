@@ -77,6 +77,7 @@ public class WebSecurityConfig {
                 .csrf((csrf) -> csrf
                         .ignoringRequestMatchers("/api/register")
                         .ignoringRequestMatchers("api/customer/**")
+                        .ignoringRequestMatchers("api/email")
                 )
                 .authorizeRequests()
                 .requestMatchers("/api/register").permitAll()  // Public access

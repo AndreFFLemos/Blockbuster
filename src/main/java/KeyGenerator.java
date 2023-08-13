@@ -6,7 +6,7 @@ import java.util.Base64;
 public class KeyGenerator {
 
         public static void main(String[] args) {
-            //Generate a random byte array of length 64
+            //Generate a random array of length 64
             byte[] randomBytes = new byte[64];
             SecureRandom secureRandom = new SecureRandom();
             secureRandom.nextBytes(randomBytes);
