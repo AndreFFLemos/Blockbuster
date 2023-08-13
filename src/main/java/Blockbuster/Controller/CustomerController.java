@@ -2,6 +2,7 @@ package Blockbuster.Controller;
 
 import Blockbuster.DTO.CustomerDto;
 import Blockbuster.DTO.PasswordDto;
+import Blockbuster.Model.Customer;
 import Blockbuster.Model.Email;
 import Blockbuster.Model.UserLoginRequest;
 import Blockbuster.Model.UserLoginResponse;
@@ -81,19 +82,6 @@ public class CustomerController implements CustomerControllerInterface {
     }
 
     @Override
-    @GetMapping(value = "/byemail")
-    public ResponseEntity<CustomerDto> findCustomerByEmail(@Valid @RequestParam ("email") String email) {
-        return ResponseEntity.ok(customerServiceInterface.findCustomerByEmail(email));
-    }
-
-    /*
-    @Override
-    @GetMapping(value = "/findbyphone")
-    public ResponseEntity<CustomerDto> findCustomerByPhone(@Valid @RequestParam ("number") int number) {
-        return ResponseEntity.ok(customerServiceInterface.findCustomerByPhone(number));
-    } */
-
-    @Override
     @GetMapping(value = "/all")
     public ResponseEntity<List<CustomerDto>> findAllCustomers() {
 
@@ -101,8 +89,8 @@ public class CustomerController implements CustomerControllerInterface {
     }
     @Override
     @PostMapping(value="/login")
-    public UserLoginResponse loginRequest(@RequestBody UserLoginRequest request) {
-        return customerServiceInterface.login(request.getEmail(), request.getPassword());
+    public UserLoginResponse loginRequest(@RequestBody UserLoginRequest login) {
+        return customerServiceInterface.login(login.getEmail(), login.getPassword());
     }
 
     @PostMapping(value="/email")

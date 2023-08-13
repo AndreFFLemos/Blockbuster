@@ -121,10 +121,11 @@ public class CustomerService implements CustomerServiceInterface {
     }
     @Override
     public void updatePassword(Integer id, PasswordDto passwordDto) {
-
         Optional<Customer> existingOptCustomer= cr.findById(id);
         Customer customerUpdated= existingOptCustomer.get();
+
         String thePassword=passwordEncoder.encode(passwordDto.getPassword());
+
         customerUpdated.setPassword(thePassword);
 
         cr.save(customerUpdated);
@@ -188,21 +189,21 @@ public class CustomerService implements CustomerServiceInterface {
     }
 
     @Override
-    public CustomerDto findCustomerByEmail(String email) {
+    public Customer findCustomerByEmail(String email) {
         Optional <Customer> foundCustomer= cr.findByEmail(email);
 
         if (foundCustomer.isEmpty()) {
             return null;
         }
-        CustomerDto customerDto=modelMapper.map(foundCustomer, CustomerDto.class);
 
-        return customerDto;
+        return foundCustomer.get();
     }
 
     public UserLoginResponse login(String email, String password){
 
         //the authentication manager gets the login values and if they match an existent user it checks its authentication
-        Authentication authentication= authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email,password,Collections.emptyList()));
+        Authentication authentication= authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(email,password,Collections.emptyList()));
 
         //and now Spring knows there is an authenticated user
         SecurityContextHolder.getContext().setAuthentication(authentication);

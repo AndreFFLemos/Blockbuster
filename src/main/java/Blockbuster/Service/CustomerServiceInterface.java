@@ -2,6 +2,7 @@ package Blockbuster.Service;
 
 import Blockbuster.DTO.CustomerDto;
 import Blockbuster.DTO.PasswordDto;
+import Blockbuster.Model.Customer;
 import Blockbuster.Model.UserLoginResponse;
 import Blockbuster.Model.UserRegistrationRequest;
 
@@ -17,7 +18,7 @@ public interface CustomerServiceInterface {
     List <CustomerDto> findCustomerByFirstName(String name);
     List <CustomerDto> findCustomerByLastName(String l);
     CustomerDto findCustomerByPhone(int i);
-    CustomerDto findCustomerByEmail(String email);
+    Customer findCustomerByEmail(String email);
     UserLoginResponse login(String email, String password);
     void updatePassword(Integer id, PasswordDto passwordDto);
 }

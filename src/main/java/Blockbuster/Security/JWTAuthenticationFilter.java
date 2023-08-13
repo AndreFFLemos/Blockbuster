@@ -55,7 +55,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
         if (userEmail.isPresent()) {
 
-            //with the email get the user
+            //with the email get the user from the DB
             UserDetails customer = customUserDetailsService.loadUserByUsername(userEmail.get());
             // Get the roles from the JWT token
             List<String> roles = jwtService.getRolesFromToken(token);

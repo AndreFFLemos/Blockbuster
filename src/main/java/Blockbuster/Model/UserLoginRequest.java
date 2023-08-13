@@ -1,8 +1,17 @@
 package Blockbuster.Model;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+
 public class UserLoginRequest {
 
+    @Email
+    @NotBlank
+    @NotEmpty
     private String email;
+    @NotBlank
+    @NotEmpty
     private String password;
 
     public String getEmail() {

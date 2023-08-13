@@ -25,16 +25,15 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override // from the userdetailsservice
     // the method is invoked during the authentication process
-    //it takes an email as input and tries to load the customerDto based on the email
+    //it takes an email as input and tries to load the customer based on the email
     public UserDetails loadUserByUsername(String email){
-        CustomerDto customerDto= customerService.findCustomerByEmail(email);
+        Customer customer= customerService.findCustomerByEmail(email);
 
-        if (customerDto==null){
+        if (customer==null){
             throw new UsernameNotFoundException("Not found");
         }
 
-        //interface userdetails it's implemented by the Customer class
-        return modelMapper.map(customerDto, UserDetails.class);
+        return customer;
     }
 
 }
