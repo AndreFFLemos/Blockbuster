@@ -1,6 +1,7 @@
 package Blockbuster.Controller;
 
 import Blockbuster.DTO.CustomerDto;
+import Blockbuster.DTO.PasswordDto;
 import Blockbuster.Model.UserLoginRequest;
 import Blockbuster.Model.UserLoginResponse;
 import jakarta.validation.Valid;
@@ -23,6 +24,7 @@ public interface CustomerControllerInterface {
     //ResponseEntity<CustomerDto> findCustomerByPhone(@Valid @RequestParam ("number") int number);
     ResponseEntity<List<CustomerDto>> findAllCustomers();
     ResponseEntity<CustomerDto> updateCustomer(@PathVariable int id,@Valid @RequestBody CustomerDto customerDto);
+    public ResponseEntity<Void> updatePassword(@PathVariable Integer id, @RequestBody PasswordDto passwordDto);
     ResponseEntity<Void> deleteCustomer(@PathVariable int id);
     UserLoginResponse loginRequest(@RequestBody UserLoginRequest request);
 }

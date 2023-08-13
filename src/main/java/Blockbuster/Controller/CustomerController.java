@@ -1,6 +1,7 @@
 package Blockbuster.Controller;
 
 import Blockbuster.DTO.CustomerDto;
+import Blockbuster.DTO.PasswordDto;
 import Blockbuster.Model.Email;
 import Blockbuster.Model.UserLoginRequest;
 import Blockbuster.Model.UserLoginResponse;
@@ -48,13 +49,14 @@ public class CustomerController implements CustomerControllerInterface {
     @PutMapping(value = "/update/{id}")
     public ResponseEntity<CustomerDto> updateCustomer(@PathVariable int id,@Valid @RequestBody CustomerDto toUpdateCustomerDto) {
         //the browser sends the updated customer data in the body of the request in JSON format.
-        CustomerDto updatedCustomerDto= customerServiceInterface.updateCustomer(id,toUpdateCustomerDto);
-
-        if (updatedCustomerDto == null) {
-            return ResponseEntity.notFound().build(); // If the customer wasn't found
-        }
-
-        return ResponseEntity.ok(updatedCustomerDto);
+        customerServiceInterface.updateCustomer(id,toUpdateCustomerDto);
+        return ResponseEntity.noContent().build();
+    }
+    @PutMapping("/updatePassword/{id}")
+    public ResponseEntity<Void> updatePassword(@PathVariable Integer id, @Valid @RequestBody PasswordDto passwordDto) {
+        customerServiceInterface.updatePassword(id,passwordDto);
+        // the build method constructs a response entity with an empty body
+        return ResponseEntity.noContent().build();
     }
 
     @Override

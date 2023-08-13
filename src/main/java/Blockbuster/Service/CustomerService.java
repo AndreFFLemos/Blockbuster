@@ -1,6 +1,7 @@
 package Blockbuster.Service;
 
 import Blockbuster.DTO.CustomerDto;
+import Blockbuster.DTO.PasswordDto;
 import Blockbuster.Model.UserLoginResponse;
 import Blockbuster.Model.UserRegistrationRequest;
 import Blockbuster.Repository.CustomerRepository;
@@ -99,12 +100,9 @@ public class CustomerService implements CustomerServiceInterface {
         return customerDto;
     }
 
-    public CustomerDto updateCustomer(int id, CustomerDto customerDto) {
+    public void updateCustomer(int id, CustomerDto customerDto) {
         Optional<Customer> existingOptCustomer= cr.findById(id);
-        //if the customer isn't found, then return nothing
-        if (existingOptCustomer.isEmpty()){
-            return null;
-        }
+
         //get the instance customer from the optional
         Customer persistedCustomer= existingOptCustomer.get();
 
@@ -117,9 +115,20 @@ public class CustomerService implements CustomerServiceInterface {
         customer=cr.save(customer);
 
         //convert back that persisted customer in to a customerDto and return it
-        CustomerDto customerDto1= modelMapper.map(customer, CustomerDto.class);
 
-        return customerDto1;
+        //CustomerDto customerDto1= modelMapper.map(customer, CustomerDto.class);
+
+    }
+    @Override
+    public void updatePassword(Integer id, PasswordDto passwordDto) {
+
+        Optional<Customer> existingOptCustomer= cr.findById(id);
+        Customer customerUpdated= existingOptCustomer.get();
+        String thePassword=passwordEncoder.encode(passwordDto.getPassword());
+        customerUpdated.setPassword(thePassword);
+
+        cr.save(customerUpdated);
+
     }
 
     @Override
@@ -206,4 +215,6 @@ public class CustomerService implements CustomerServiceInterface {
 
         return new UserLoginResponse(token,customerDto);
     }
+
+
 }
