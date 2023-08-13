@@ -78,6 +78,7 @@ public class WebSecurityConfig {
                         .ignoringRequestMatchers("/api/register")
                         .ignoringRequestMatchers("api/customer/**")
                         .ignoringRequestMatchers("api/email")
+                        .ignoringRequestMatchers("api/movie/**")
                 )
                 .authorizeRequests()
                 .requestMatchers("/api/register").permitAll()  // Public access

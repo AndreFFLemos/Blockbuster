@@ -28,9 +28,14 @@ public class MovieController implements MovieControllerInterface {
     }
 
     @Override
-    @GetMapping(value = "movie/findbyid")
+    @GetMapping(value = "movie/byid")
     public ResponseEntity<MovieDto> findMovieById(@RequestParam("id") int id) {
         return ResponseEntity.ok(movieServiceInterface.findMovieById(id));
+    }
+    @Override
+    @GetMapping(value = "movie/bytitle")
+    public ResponseEntity<MovieDto> findMovieByTitle(@RequestParam("title") String title) {
+        return ResponseEntity.ok(movieServiceInterface.findMovieByTitle(title));
     }
 
     @Override
@@ -59,8 +64,10 @@ public class MovieController implements MovieControllerInterface {
 
     @Override
     @PutMapping(value = "/movie/{id}")
-    public ResponseEntity<MovieDto> updateMovie(@PathVariable int id, @Valid @RequestBody MovieDto movieDto) {
-        return ResponseEntity.ok(movieServiceInterface.updateMovie(movieDto));
+    public ResponseEntity<Void> updateMovie(@PathVariable int id, @Valid @RequestBody MovieDto movieDto) {
+        movieServiceInterface.updateMovie(id,movieDto);
+
+        return ResponseEntity.noContent().build();
     }
 
     @Override

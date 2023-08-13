@@ -17,8 +17,9 @@ public interface MovieControllerInterface {
     ResponseEntity<List<MovieDto>> findAllMovies();
     ResponseEntity<List<MovieDto>> findMoviesByReleaseYear(@Valid @RequestParam ("year") int year);
     ResponseEntity<List<MovieDto>> findMoviesByGenre(@Valid @RequestParam ("genre") String genre);
-    ResponseEntity<MovieDto>  updateMovie(@PathVariable int id,@Valid @RequestBody MovieDto movieDto);
+    ResponseEntity<Void>  updateMovie(@PathVariable int id,@Valid @RequestBody MovieDto movieDto);
     ResponseEntity <Void> deleteMovie(@PathVariable int id);
     ResponseEntity <MovieDto> movieBeingWatched(@PathVariable int customerId, @PathVariable int movieId);
+    ResponseEntity<MovieDto> findMovieByTitle(@RequestParam("title") String title);
 
 }

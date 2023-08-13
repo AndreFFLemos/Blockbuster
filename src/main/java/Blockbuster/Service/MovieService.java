@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,28 +58,27 @@ public class MovieService implements MovieServiceInterface{
 
     public List<MovieDto> findAllMovies(){
         List <Movie>movies = movieRepository.findAll();
+        List<MovieDto> moviesDto=new LinkedList<>();
 
-        return movies.stream()
-                .map(movie -> modelMapper.map(movies,MovieDto.class))
-                .collect(Collectors.toList());
+
+        for (Movie movie:movies){
+            MovieDto movieDto= modelMapper.map(movie,MovieDto.class);
+            moviesDto.add(movieDto);
+        }
+        return moviesDto;
     }
 
-    public MovieDto updateMovie(MovieDto movieDto) {
-           Optional <Movie> existingMovie= movieRepository.findMovieByTitle(movieDto.getTitle());
+    public void updateMovie(int id, MovieDto movieDto) {
+           Optional <Movie> optionalMovie= movieRepository.findById(id);
 
-           if (existingMovie.isEmpty()){
-               return null;
+           if (optionalMovie.isEmpty()){
+               throw new NoSuchElementException("No movie with that Id found");
            }
-
-           //because the movie exists in the DB, repo delete it
-            movieRepository.deleteByTitle(movieDto.getTitle());
+            Movie movieToUpdate= optionalMovie.get();
            //convert the movieDto to movie and then repo persist it
             Movie movie= modelMapper.map(movieDto,Movie.class);
-            movie= movieRepository.save(movie);
-            //convert that persisted movie to movie Dto and return it
-            MovieDto movieDto1=modelMapper.map(movie,MovieDto.class);
-
-            return movieDto1;
+            movie.setId(movieToUpdate.getId());
+            movieRepository.save(movie);
     }
 
     public void deleteMovieById(int id) {
@@ -103,7 +100,6 @@ public class MovieService implements MovieServiceInterface{
         MovieDto movieDto= modelMapper.map(movie,MovieDto.class);
 
         return movieDto;
-
     }
 
     @Override
@@ -112,7 +108,6 @@ public class MovieService implements MovieServiceInterface{
         if (movies.isEmpty()){
             return Collections.emptyList();
         }
-
 
         return movies.stream()
                 .map(movie -> modelMapper.map(movie,MovieDto.class))

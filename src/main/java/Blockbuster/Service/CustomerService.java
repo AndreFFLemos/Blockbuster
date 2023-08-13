@@ -112,11 +112,8 @@ public class CustomerService implements CustomerServiceInterface {
         String thePassword=passwordEncoder.encode(persistedCustomer.getPassword());
         customer.setPassword(thePassword);
         //customer.setId(id);
-        customer=cr.save(customer);
-
-        //convert back that persisted customer in to a customerDto and return it
-
-        //CustomerDto customerDto1= modelMapper.map(customer, CustomerDto.class);
+        customer.setId(persistedCustomer.getId());
+        cr.save(customer);
 
     }
     @Override
@@ -125,7 +122,6 @@ public class CustomerService implements CustomerServiceInterface {
         Customer customerUpdated= existingOptCustomer.get();
 
         String thePassword=passwordEncoder.encode(passwordDto.getPassword());
-
         customerUpdated.setPassword(thePassword);
 
         cr.save(customerUpdated);

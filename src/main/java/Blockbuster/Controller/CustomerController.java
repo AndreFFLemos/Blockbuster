@@ -48,7 +48,7 @@ public class CustomerController implements CustomerControllerInterface {
     }
     @Override
     @PutMapping(value = "/update/{id}")
-    public ResponseEntity<CustomerDto> updateCustomer(@PathVariable int id,@Valid @RequestBody CustomerDto toUpdateCustomerDto) {
+    public ResponseEntity<Void> updateCustomer(@PathVariable int id,@Valid @RequestBody CustomerDto toUpdateCustomerDto) {
         //the browser sends the updated customer data in the body of the request in JSON format.
         customerServiceInterface.updateCustomer(id,toUpdateCustomerDto);
         return ResponseEntity.noContent().build();
