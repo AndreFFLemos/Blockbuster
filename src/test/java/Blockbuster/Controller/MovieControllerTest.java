@@ -2,6 +2,7 @@ package Blockbuster.Controller;
 
 import Blockbuster.Config.SecurityConfig;
 import Blockbuster.DTO.MovieDto;
+import Blockbuster.Model.Customer;
 import Blockbuster.Model.Movie;
 import Blockbuster.Service.MovieServiceInterface;
 import Blockbuster.BlockbusterApplication;
@@ -26,6 +27,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,6 +36,7 @@ import static org.mockito.Mockito.*;
 @SpringBootTest(classes = BlockbusterApplication.class)
 public class MovieControllerTest {
 
+    private Customer customer;
     private Movie movie;
     private MovieDto movieDto;
     private List<MovieDto> movieDtos;
@@ -46,8 +49,9 @@ public class MovieControllerTest {
 
     @BeforeEach
     void setup(){
+        customer= new Customer();
         movieDtos=new LinkedList<>();
-        movie= new Movie(0,"Rambo","Action",1981,7);
+        movie= new Movie(0,"Rambo","Action",1981,7, Collections.singletonList(customer));
         movieDto= new MovieDto("Rambo","Action",1981,7);
         movieDtos.add(movieDto);
 
@@ -145,13 +149,12 @@ public class MovieControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody);
 
-        when(movieServiceInterface.updateMovie(movieDto)).thenReturn(movieDto);
+        doNothing().when(movieServiceInterface).updateMovie(1,movieDto);
 
         mockMvc.perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json(requestBody));
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
 
-        verify(movieServiceInterface).updateMovie(movieDto);
+        verify(movieServiceInterface).updateMovie(1,movieDto);
 
     }
 

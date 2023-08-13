@@ -43,7 +43,7 @@ class MovieServiceTest {
     void setup (){
         modelMapper=new ModelMapper();
         ms= new MovieService(movieRepository,customerRepository,modelMapper);
-        movie= new Movie(0,"Rambo","Action",1982,7);
+        movie= new Movie(0,"Rambo","Action",1982,7,Collections.singletonList(customer));
         movieDto=new MovieDto("Rambo","Action",1982,7);
         movies= new LinkedList<>();
         movies.add(movie);
@@ -55,7 +55,7 @@ class MovieServiceTest {
     @Test
     void createMovieTest() {
 
-        Movie newMovie= new Movie(0,"ET","Adventure",1980,8);
+        Movie newMovie= new Movie(0,"ET","Adventure",1980,8,Collections.singletonList(customer));
         MovieDto newMovieDto= new MovieDto("ET","Adventure",1980,8);
 
         //test when movie doesn't exist in the DB
@@ -109,20 +109,17 @@ class MovieServiceTest {
 
     @Test
     void updateMovieTest() {
-        Movie updatedMovie= new Movie(0,"Matrix","Action",1999,8);
+        Movie updatedMovie= new Movie(0,"Matrix","Action",1999,8,Collections.singletonList(customer));
         MovieDto updatedMovieDto= new MovieDto("Matrix","Action",1999,8);
 
         //when the movie exists
         when(movieRepository.findMovieByTitle("Matrix")).thenReturn(Optional.of(updatedMovie)); //when findById gets used then it returns
         when(movieRepository.save(updatedMovie)).thenReturn(updatedMovie); //when a movie is saved by the repo then return that movie
-        MovieDto mockedM= ms.updateMovie(updatedMovieDto);
-        assertEquals("Matrix",mockedM.getTitle());
+        ms.updateMovie(0,updatedMovieDto);
 
         //when the movie doesn't exist
         when (movieRepository.findMovieByTitle("ET")).thenReturn(Optional.empty());
-        MovieDto nonExistingMovie=ms.updateMovie(new MovieDto("ET","adventure",1980,8));
-
-        assertNull(nonExistingMovie);
+        ms.updateMovie(0,new MovieDto("ET","adventure",1980,8));
 
         verify(movieRepository).save(updatedMovie);
         verify(movieRepository).deleteByTitle("Matrix");

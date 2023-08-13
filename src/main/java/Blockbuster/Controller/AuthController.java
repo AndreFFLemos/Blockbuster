@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
 
-@RestController
+    @RestController
     @RequestMapping(value= "/api")
     public class AuthController {
 
@@ -35,7 +35,7 @@ import java.util.Collections;
 
             // Create a new user
             customerServiceInterface.createCustomer(registrationRequest);
-
+            //when a user registers at the API it authomatically sends a welcoming email
             Email email= new Email();
             email.setSubject("Welcome to Blockbuster");
             email.setBody("Thank you for registering at Blockbuster");
