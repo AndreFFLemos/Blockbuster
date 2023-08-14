@@ -9,10 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Builder
 @Data //Lombok takes care of the getters and setters
@@ -33,9 +30,6 @@ public class Customer implements UserDetails {
     @Column(name="hashedpass",nullable = false)
     private String password;//the hashpassword is the value being persisted.
     //the password in the userregistration class is the real pass
-    @Column(name="phone")
-    @Digits(integer = 5,fraction = 0,message = "The number has to have 5 digits")
-    private int phone;
     @Column(name="email", unique = true)
     @NotEmpty(message = "This field should not be empty")
     @Email(message = "Wrong format")
@@ -47,7 +41,7 @@ public class Customer implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "movie_id"))
     @ToString.Exclude //the tostring was causing a recursive issue between the customer and movie objects
     @Builder.Default
-    private List <Movie> watchedMovies= new ArrayList<>();//arraylist use less memory and is quicker with large lists
+    private List <Movie> watchedMovies= new LinkedList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

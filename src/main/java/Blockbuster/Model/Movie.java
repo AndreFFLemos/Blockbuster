@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Builder
@@ -28,6 +29,6 @@ public class Movie {
     //the mappedBy attribute indicates that the relationship is managed by the customer side
     @ManyToMany(mappedBy = "watchedMovies")
     @Builder.Default //this guarantees that the instances are created via builder and values are always present
-    private List<Customer> viewers= new ArrayList<>();
+    private List<Customer> viewers= new LinkedList<>();
 
 }

@@ -56,7 +56,7 @@ public class CustomerService implements CustomerServiceInterface {
 
         //it's cheaper in terms of resources to return an optional  than throwing an exception for something that can be normal
         if (customerExists.isPresent()) {
-            return null;
+            throw new IllegalArgumentException("Customer already exists");
         }
 
         //convert the customerDto instance to a POJO instance and save the latter to the customer instance
@@ -102,18 +102,22 @@ public class CustomerService implements CustomerServiceInterface {
 
     public void updateCustomer(int id, CustomerDto customerDto) {
         Optional<Customer> existingOptCustomer= cr.findById(id);
+        if (existingOptCustomer!=null) {
+            //get the instance customer from the optional
+            Customer persistedCustomer = existingOptCustomer.get();
 
-        //get the instance customer from the optional
-        Customer persistedCustomer= existingOptCustomer.get();
-
-        //convert the customerDto instance into a customer instance and save it
-        Customer customer= modelMapper.map(customerDto, Customer.class);
-        //because the customerDto doesnt have a password attribute then use the existing pass
-        String thePassword=passwordEncoder.encode(persistedCustomer.getPassword());
-        customer.setPassword(thePassword);
-        //customer.setId(id);
-        customer.setId(persistedCustomer.getId());
-        cr.save(customer);
+            //convert the customerDto instance into a customer instance and save it
+            Customer customer = modelMapper.map(customerDto, Customer.class);
+            //because the customerDto doesnt have a password attribute then use the existing pass
+            String thePassword = passwordEncoder.encode(persistedCustomer.getPassword());
+            customer.setPassword(thePassword);
+            //customer.setId(id);
+            customer.setId(persistedCustomer.getId());
+            cr.save(customer);
+        }
+        else {
+            throw new NoSuchElementException("Customer not found");
+        }
 
     }
     @Override

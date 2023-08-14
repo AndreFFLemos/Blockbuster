@@ -2,6 +2,8 @@ package Blockbuster.Model;
 
 import jakarta.validation.constraints.Size;
 
+import java.util.Objects;
+
 public class UserRegistrationRequest {
     private String email;
     @Size(min = 8, max = 20, message = "Password must be between 8 and 20 characters.")
@@ -30,5 +32,18 @@ public class UserRegistrationRequest {
 
     public void setName(String firstName) {
         this.firstName = firstName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserRegistrationRequest that = (UserRegistrationRequest) o;
+        return Objects.equals(email, that.email) && Objects.equals(password, that.password) && Objects.equals(firstName, that.firstName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(email, password, firstName);
     }
 }

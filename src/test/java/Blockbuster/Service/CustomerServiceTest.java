@@ -54,12 +54,14 @@ class CustomerServiceTest {
     public void setup(){
         movie=new Movie();
         userRegistrationRequest= new UserRegistrationRequest();
+        userRegistrationRequest.setPassword("ugabugas");
+        userRegistrationRequest.setEmail("b@b");
         passwordEncoder=new BCryptPasswordEncoder();
         //I'm passing this modelmapper instance to the customer service instance so that the modelmapper is not null
         //I'm using new because the model mapper is not a mock
         cs = new CustomerService(cr, modelMapper,passwordEncoder);
-        customerDto=new CustomerDto("A","L","AL","a@l",1234);
-        customer=new Customer(0,"A","L","AL",null,1234,"a@l", Collections.singletonList(movie));
+        customerDto=new CustomerDto("A","L","AL","a@l");
+        customer=new Customer(1,"A","L","AL",null,"a@l", new LinkedList<>());
         customerDtoSaved = modelMapper.map(customer, CustomerDto.class);// convert the POJO persisted Customer to CustomerDto
         customersFound= new LinkedList<>();
         customersFound.add(customer);
@@ -69,30 +71,28 @@ class CustomerServiceTest {
     void createCustomerTest() {
 
         // test when customer doesn't exist
-            when(cr.findById(0)).thenReturn(Optional.empty());  // There's no customer with this number
-            when(cr.save(customer)).thenReturn(customer); // By saving a customer, return the predefined customer
+            when(cr.findByEmail("b@b")).thenReturn(Optional.empty());  // There's no customer with this number
+            when(cr.save(any(Customer.class))).thenReturn(customer); // By saving a customer, return the predefined customer
             CustomerDto mockedC = cs.createCustomer(userRegistrationRequest);
             assertEquals(customerDtoSaved, mockedC);  // Is the returned dto the same as the saved one?
 
             //test when customer already exists
-            when(cr.findById(anyInt())).thenReturn(Optional.of(customer)); //When the customer already exists
-            CustomerDto existingC = cs.createCustomer(userRegistrationRequest); //invoke the cr.findById and then returns empty as defined in the customerService
-            assertNull(existingC);
+            when(cr.findByEmail("b@b")).thenReturn(Optional.of(customer)); //When the customer already exists
+            assertThrows(IllegalArgumentException.class, ()-> cs.createCustomer(userRegistrationRequest)); //invoke the cr.findById and then returns empty as defined in the customerService
 
-            verify(cr, times(1)).save(customer); //the number of times the cr.save method is really used.
-            verify(cr,times(2)).findById(anyInt());
+            verify(cr).save(any(Customer.class)); //the number of times the cr.save method is really used.
+            verify(cr,times(2)).findByEmail(anyString());
     }
 
     @Test
     void deleteCustomerTest() {
-
         when(cr.findById(anyInt())).thenReturn(Optional.of(customer)); // simulates the existence of the customer
         doNothing().when(cr).deleteById(1); //when the delete method is invoked, do nothing because it returns a void
 
         cs.deleteCustomer(1);
 
-        verify(cr).delete(customer);
-        verify(cr).findByPhone(anyInt());
+        verify(cr).deleteById(1);
+        verify(cr).findById(anyInt());
 
     }
 
@@ -145,16 +145,16 @@ class CustomerServiceTest {
     void findCustomerByEmailTest (){
 
         //check when customer is present
-        when(cr.findByEmail("a@L")).thenReturn(Optional.of(customer));
-        CustomerDto mockedC= cs.findCustomerById(1);
-        assertEquals(customerDtoSaved,mockedC);
+        when(cr.findByEmail("a@l")).thenReturn(Optional.of(customer));
+        Customer mockedC= cs.findCustomerByEmail("a@l");
+        assertEquals(customer,mockedC);
 
         //check when customer is not present
         when(cr.findByEmail("b@b")).thenReturn(Optional.empty());
-        CustomerDto customerNotFound= cs.findCustomerById(1);
+        Customer customerNotFound= cs.findCustomerByEmail("b@b");
         assertNull(customerNotFound);
 
-        verify(cr).findByEmail("a@L");
+        verify(cr).findByEmail("a@l");
         verify(cr).findByEmail("b@b");
     }
 
@@ -176,19 +176,19 @@ void findAllTest (){
 }
     @Test
     void updateCustomerTest() {
-        Customer updatedCustomer= new Customer(1,"Ana","Lemos","AL",null,1234,"a@l",Collections.singletonList(movie));
+        Customer updatedCustomer= new Customer(1,"Ana","Lemos","AL","ugabugas","a@l",new LinkedList<>());
 
         //if the customer exists
         when(cr.findById(1)).thenReturn(Optional.of(updatedCustomer)); //guarantee that the method returns an existing customer
         when(cr.save(any(Customer.class))).thenReturn(updatedCustomer);
         cs.updateCustomer(1,customerDto);
 
-        verify(cr, times(1)).findById(1);
-        verify(cr, times(1)).save(updatedCustomer);
+        verify(cr).findById(1);
+        verify(cr).save(any());
 
         //if the customer doesn't exist
-        when(cr.findById(anyInt())).thenReturn(Optional.empty());
-        cs.updateCustomer(1,customerDto);
+        assertThrows(NoSuchElementException.class,()->
+        cs.updateCustomer(5,customerDto));
 
         verify(cr).save(any(Customer.class));
         verify(cr,times(2)).findById(anyInt());

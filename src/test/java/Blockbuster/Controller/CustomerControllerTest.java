@@ -10,6 +10,7 @@ import Blockbuster.Model.Movie;
 import Blockbuster.Model.UserRegistrationRequest;
 import Blockbuster.Repository.CustomerRepository;
 import Blockbuster.Service.CustomerServiceInterface;
+import Blockbuster.Service.EmailServiceInterface;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,7 +46,7 @@ public class CustomerControllerTest {
     private CustomerServiceInterface customerServiceInterface;
     @InjectMocks
     private CustomerController customerController;
-    private UserRegistrationRequest userRegistrationRequest;
+
     private Customer customer;
     private CustomerDto customerDto;
     private List<CustomerDto> customerDtos;
@@ -54,31 +55,13 @@ public class CustomerControllerTest {
     @BeforeEach
     public void setup(){
         movie= new Movie();
-        userRegistrationRequest=new UserRegistrationRequest();
         customerDtos=new LinkedList<>();
-        customer= new Customer(1,"A","L","AL",null,12345,"a@l", Collections.singletonList(movie));
-        customerDto=new CustomerDto("A","L","AL","a@l",12345);
-       customerDtos.add(customerDto);
+        customer= new Customer(1,"A","L","AL",null,"a@l", Collections.singletonList(movie));
+        customerDto=new CustomerDto("A","L","AL","a@l");
+        customerDtos.add(customerDto);
         // the following creates the MockMvc instance
         mockMvc=MockMvcBuilders.standaloneSetup(customerController).build();
         MockitoAnnotations.openMocks(this);
-    }
-
-    @Test
-    public void createCustomerTest() throws Exception {
-        //the object mapper is converting the customerDto instance in to a json format and saving it in the request body
-        String requestBody= objectMapper.writeValueAsString(userRegistrationRequest);
-        System.out.println(requestBody);
-        //i'm telling the mockmvc to build a post request with the content type json and the content is the instance converted
-        var requestBuilder=MockMvcRequestBuilders.post("/api/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestBody);
-
-        when(customerServiceInterface.createCustomer(userRegistrationRequest)).thenReturn(customerDto);
-        mockMvc.perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isOk());
-
-        verify(customerServiceInterface).createCustomer(userRegistrationRequest);
     }
 
     @Test

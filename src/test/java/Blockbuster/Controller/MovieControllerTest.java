@@ -15,6 +15,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -33,7 +34,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 
-@SpringBootTest(classes = BlockbusterApplication.class)
+@SpringBootTest
 public class MovieControllerTest {
 
     private Customer customer;
@@ -79,7 +80,7 @@ public class MovieControllerTest {
     @Test
     void findMovieByIdTest() throws Exception {
 
-        var requestBuilder= MockMvcRequestBuilders.get("/api/movie/findbyid?id=1");
+        var requestBuilder= MockMvcRequestBuilders.get("/api/movie/byid?id=1");
 
         when(movieServiceInterface.findMovieById(1)).thenReturn(movieDto);
 

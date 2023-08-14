@@ -21,6 +21,7 @@ import java.util.Collections;
         private CustomerServiceInterface customerServiceInterface;
         private EmailServiceInterface emailServiceInterface;
 
+    @Autowired
     public AuthController(CustomerServiceInterface customerServiceInterface, EmailServiceInterface emailServiceInterface) {
         this.customerServiceInterface = customerServiceInterface;
         this.emailServiceInterface = emailServiceInterface;

@@ -36,26 +36,31 @@ class MovieServiceTest {
     private List <Movie> movies;
     private MovieDto movieDto;
     private MovieDto movieDtoSaved;
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
+    private List<Customer> customers;
 
 
     @BeforeEach
     void setup (){
         modelMapper=new ModelMapper();
-        ms= new MovieService(movieRepository,customerRepository,modelMapper);
-        movie= new Movie(0,"Rambo","Action",1982,7,Collections.singletonList(customer));
-        movieDto=new MovieDto("Rambo","Action",1982,7);
         movies= new LinkedList<>();
+        ms= new MovieService(movieRepository,customerRepository,modelMapper);
+        //Collections.emptylist is an immutable list
+        movie= new Movie(0,"Rambo","Action",1982,7,new LinkedList<>());
+        movieDto=new MovieDto("Rambo","Action",1982,7);
+
         movies.add(movie);
         movieDtoSaved= modelMapper.map(movie, MovieDto.class);
-        customer= new Customer(0,"Ana", "Lemos","AL","ola",1234,"a@l",movies);
-        customerDto= new CustomerDto("Ana", "Lemos","AL","a@l",1234);
+        customer= new Customer(0,"Ana", "Lemos","AL","ola","a@l",movies);
+        customers=new LinkedList<>();
+        customers.add(customer);
+        customerDto= new CustomerDto("Ana", "Lemos","AL","a@l");
     }
 
     @Test
     void createMovieTest() {
 
-        Movie newMovie= new Movie(0,"ET","Adventure",1980,8,Collections.singletonList(customer));
+        Movie newMovie= new Movie(0,"ET","Adventure",1980,8,Collections.emptyList());
         MovieDto newMovieDto= new MovieDto("ET","Adventure",1980,8);
 
         //test when movie doesn't exist in the DB
@@ -67,8 +72,7 @@ class MovieServiceTest {
 
         //when movie exists
         when (movieRepository.findMovieByTitle("Rambo")).thenReturn(Optional.of(movie));
-        MovieDto existingMovie= ms.createMovie(movieDto);
-        assertNull(existingMovie);
+        assertThrows(IllegalArgumentException.class,()-> ms.createMovie(movieDto));
 
         verify(movieRepository).save(newMovie);
         verify(movieRepository).findMovieByTitle("ET");
@@ -109,22 +113,23 @@ class MovieServiceTest {
 
     @Test
     void updateMovieTest() {
-        Movie updatedMovie= new Movie(0,"Matrix","Action",1999,8,Collections.singletonList(customer));
+        Movie updatedMovie= new Movie(1,"Matrix","Action",1999,8,Collections.emptyList());
         MovieDto updatedMovieDto= new MovieDto("Matrix","Action",1999,8);
 
         //when the movie exists
-        when(movieRepository.findMovieByTitle("Matrix")).thenReturn(Optional.of(updatedMovie)); //when findById gets used then it returns
+        when(movieRepository.findById(1)).thenReturn(Optional.of(updatedMovie)); //when findById gets used then it returns
         when(movieRepository.save(updatedMovie)).thenReturn(updatedMovie); //when a movie is saved by the repo then return that movie
-        ms.updateMovie(0,updatedMovieDto);
+        ms.updateMovie(1,updatedMovieDto);
 
         //when the movie doesn't exist
-        when (movieRepository.findMovieByTitle("ET")).thenReturn(Optional.empty());
-        ms.updateMovie(0,new MovieDto("ET","adventure",1980,8));
+        when (movieRepository.findById(0)).thenReturn(Optional.empty());
+        assertThrows(NoSuchElementException.class,()->
+                ms.updateMovie(0,
+                        new MovieDto("ET","adventure",1980,8)));
 
         verify(movieRepository).save(updatedMovie);
-        verify(movieRepository).deleteByTitle("Matrix");
-        verify(movieRepository).findMovieByTitle("Matrix");
-        verify(movieRepository).findMovieByTitle("ET");
+        verify(movieRepository).findById(1);
+        verify(movieRepository).findById(0);
 
     }
 

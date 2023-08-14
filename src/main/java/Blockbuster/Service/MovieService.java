@@ -5,6 +5,7 @@ import Blockbuster.Model.Customer;
 import Blockbuster.Model.Movie;
 import Blockbuster.Repository.CustomerRepository;
 import Blockbuster.Repository.MovieRepository;
+import org.jruby.exceptions.Exception;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,8 +32,9 @@ public class MovieService implements MovieServiceInterface{
     public MovieDto createMovie(MovieDto movieDto) {
         //if the movie is in the DB then the method will return an empty container meaning no saved movie
         Optional <Movie> existingMovie= movieRepository.findMovieByTitle(movieDto.getTitle());
+
         if (existingMovie.isPresent()) {
-            return null;
+            throw new IllegalArgumentException("Movie already is present");
         }
 
         //convert the customerDto instance to a POJO instance and save the latter to the customer variable
