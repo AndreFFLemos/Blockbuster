@@ -74,6 +74,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                //without this cross site request forgery off the api produces a forbiden access 403. Just for development
                 .csrf((csrf) -> csrf
                         .ignoringRequestMatchers("/api/register")
                         .ignoringRequestMatchers("api/customer/**")
